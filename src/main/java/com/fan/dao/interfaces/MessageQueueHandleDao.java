@@ -8,4 +8,5 @@ package com.fan.dao.interfaces;
  * @description:消息队列处理逻辑
  */
 public interface MessageQueueHandleDao {
+
 }
