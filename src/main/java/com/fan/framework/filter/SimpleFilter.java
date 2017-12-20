@@ -15,7 +15,7 @@ import java.io.IOException;
  * @date:2017-12-19 20:47:20
  * @E-mail:fanwenlong@lvmama.com
  * @mobile:186-0307-4401
- * @description:
+ * @description:一个简单的过滤器实现
  */
 public class SimpleFilter implements Filter {
     @Override
@@ -25,16 +25,9 @@ public class SimpleFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request   = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        StringBuffer sb = request.getRequestURL();
-        if(sb.toString().endsWith("index")){
-            ((HttpServletResponse)servletResponse).sendRedirect("home");
-            return;
-        }
+        System.out.println("SimpleFilter handle  1");
         filterChain.doFilter(servletRequest,servletResponse);
-//
-        return;
+        System.out.println("SimpleFilter handle  2");
     }
 
     @Override

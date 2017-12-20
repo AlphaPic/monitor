@@ -1,6 +1,7 @@
 package com.fan.framework.config;
 
 import com.fan.framework.filter.SimpleFilter;
+import com.fan.framework.filter.UserLoginFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
@@ -43,11 +44,11 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
     }
 
     /**
-     * 添加过滤器
+     * 添加过滤器链，请求将在这里被过滤
      * @return
      */
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new SimpleFilter()};
+        return new Filter[]{new SimpleFilter(),new UserLoginFilter()};
     }
 }
