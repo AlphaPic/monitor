@@ -30,17 +30,35 @@ public class BaseRequest implements Serializable{
      */
     private String monitorCookie;
     /**
+     * ip
+     */
+    @NotNull(message = "ip不能为空")
+    private String ip;
+    /**
+     * 登录通道
+     */
+    @NotNull(message = "登录通道不能为空")
+    private String loginChannel;
+    /**
+     * 用户id
+     */
+    private Long userId;
+    /**
      * 请求信息
      */
-    private HttpServletRequest request;
+    private HttpServletRequest httpRequest;
     /**
      * 响应信息
      */
-    private HttpServletResponse response;
-    /**
-     * 用户ID
-     */
-    private Long userId;
+    private HttpServletResponse httpResponse;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getMethod() {
         return method;
@@ -66,28 +84,36 @@ public class BaseRequest implements Serializable{
         this.monitorCookie = monitorCookie;
     }
 
-    public HttpServletRequest getRequest() {
-        return request;
+    public String getIp() {
+        return ip;
     }
 
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public HttpServletResponse getResponse() {
-        return response;
+    public String getLoginChannel() {
+        return loginChannel;
     }
 
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
+    public void setLoginChannel(String loginChannel) {
+        this.loginChannel = loginChannel;
     }
 
-    public Long getUserId() {
-        return userId;
+    public HttpServletRequest getHttpRequest() {
+        return httpRequest;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setHttpRequest(HttpServletRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
+
+    public HttpServletResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public void setHttpResponse(HttpServletResponse httpResponse) {
+        this.httpResponse = httpResponse;
     }
 
     @Override
@@ -99,12 +125,16 @@ public class BaseRequest implements Serializable{
                 .append(version).append('\"');
         sb.append(",\"monitorCookie\":\"")
                 .append(monitorCookie).append('\"');
-        sb.append(",\"request\":")
-                .append(request);
-        sb.append(",\"response\":")
-                .append(response);
+        sb.append(",\"ip\":\"")
+                .append(ip).append('\"');
+        sb.append(",\"loginChannel\":\"")
+                .append(loginChannel).append('\"');
         sb.append(",\"userId\":")
                 .append(userId);
+        sb.append(",\"httpRequest\":")
+                .append(httpRequest);
+        sb.append(",\"httpResponse\":")
+                .append(httpResponse);
         sb.append('}');
         return sb.toString();
     }

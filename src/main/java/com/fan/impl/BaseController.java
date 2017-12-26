@@ -17,7 +17,7 @@ import java.util.Map;
  * @mobile:186-0307-4401
  * @description:基本的控制器
  */
-@Controller
+@MonitorController
 public class BaseController {
 
     @RequestMapping(value = "home",method = RequestMethod.GET)

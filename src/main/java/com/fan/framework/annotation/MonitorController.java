@@ -19,6 +19,6 @@ import java.lang.annotation.*;
 @Documented
 @Controller
 @Component
-@RequestMapping(value = "/monitor/rest",produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/rest",produces = "application/json;charset=UTF-8")
 public @interface MonitorController {
 }

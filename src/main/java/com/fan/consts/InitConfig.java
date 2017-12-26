@@ -14,4 +14,10 @@ public interface InitConfig {
 
     /** 登录拦截器匹配路径 */
     public final String LoginInterceptorPattern_0 = "/*";
+
+    /** 正则匹配 */
+    public final String ip4Pattern = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}";//是否是正确的ip
+
+    /** redis的相关配置 */
+    public final Long userSurviveTime = 1800L;  //用户的存活时间
 }

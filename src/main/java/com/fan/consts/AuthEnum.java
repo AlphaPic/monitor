@@ -7,7 +7,7 @@ package com.fan.consts;
  * @mobile:186-0307-4401
  * @description:登录条件枚举
  */
-public enum  LoginOptionEnum {
-    FORCE,
-    UNCESSARY
+public enum AuthEnum {
+    FORCE,          //强制登录
+    UNCESSARY;      //无需登录
 }
