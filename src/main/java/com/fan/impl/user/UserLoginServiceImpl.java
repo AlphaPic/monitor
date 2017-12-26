@@ -50,7 +50,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
         String userName = request.getUserName();
         String password = request.getPassword();
 
-        String redisValue = RedisUtils.redisKeyExist(cookie);
+        String redisValue = RedisUtils.getRedisValue(cookie);
         if(StringUtils.isEmpty(redisValue)){
             logger.error("cookie已经过期，请重新去请求cookie");
             return BaseResponse.error("-1","cookie已经过期");
@@ -133,7 +133,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
     @Override
     public BaseResponse<Boolean> cancelLogin(CancelRequest request) {
         String cookie = request.getMonitorCookie();
-        String cookieValue = RedisUtils.redisKeyExist(cookie);
+        String cookieValue = RedisUtils.getRedisValue(cookie);
         if(StringUtils.isEmpty(cookieValue)){
             logger.error("用户的cookie不存在");
             return BaseResponse.error("-1","用户的cookie不存在");

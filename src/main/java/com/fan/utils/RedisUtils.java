@@ -15,9 +15,9 @@ public class RedisUtils {
 
     /**
      * 设置string类型的redis值
-     * @param key
-     * @param value
-     * @param timeout
+     * @param key 键
+     * @param value 值
+     * @param timeout 存活时间
      * @return
      */
     public static Boolean setStringValue(String key,String value,Long timeout){
@@ -40,7 +40,7 @@ public class RedisUtils {
      * @param key
      * @return
      */
-    public static String redisKeyExist(String key){
+    public static Boolean redisKeyExist(String key){
         return null;
     }
 
@@ -51,5 +51,31 @@ public class RedisUtils {
      */
     public static Boolean deleteRedisKey(String key){
         return false;
+    }
+
+    /**
+     * 获取redis的值
+     * @param key
+     * @return
+     */
+    public static String getRedisValue(String key){
+        return null;
+    }
+
+    /**
+     * 在一个redis key的数组中，假如其中一个不存在，则对所有的redis key进行删除
+     * @param keys
+     * @return
+     */
+    public static Boolean deleteIfRedisKeyDoesNotExists(String...keys){
+        if(keys == null){
+            return false;
+        }
+        for (String key : keys){
+            if(redisKeyExist(key) == false){
+                deleteRedisKey(key);
+            }
+        }
+        return true;
     }
 }

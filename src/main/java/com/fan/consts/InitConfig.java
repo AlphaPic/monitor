@@ -8,6 +8,9 @@ package com.fan.consts;
  * @description:初始化的配置
  */
 public interface InitConfig {
+    /** 过滤器开关控制 */
+    public final Boolean Login_button = false;  //登录过滤器的开关控制
+
     /** JSP viewResolver的匹配 */
     public final String JspResolverPrefix = "/WEB-INF/";        //前缀
     public final String JspResolverSuffix = ".jsp";             //后缀
@@ -20,4 +23,12 @@ public interface InitConfig {
 
     /** redis的相关配置 */
     public final Long userSurviveTime = 1800L;  //用户的存活时间
+
+    /** redis常量 */
+    public final String LOGIN_FAIL = "LOGIN_FAIL_";        //登录失败次数
+    public final String LIMIT_HOST = "LIMIT_HOST_";        //受限制的host
+    //登录相关
+    public final String TWO_MINUTE_LOGIN_LIMIT = "TWO_MINUTE_LOGIN_LIMIT_";                     //两分钟内的登录接口调用限制
+    public final String TWO_MINUTE_LOGIN_PERMIT_LIMIT = "TWO_MINUTE_LOGIN_PERMIT_LIMIT_";       //两分钟内的登录权限接口调用限制
+    public final String TWO_MINUTE_INTERFACE_CALL_LIMIT = "TWO_MINUTE_INTERFACE_CALL_LIMIT_";   //两分钟内的接口调用限制
 }

@@ -61,4 +61,17 @@ public class InternetUtils {
     public static Boolean isPasswordIlleagle(String password){
         return true;
     }
+
+    /**
+     * 判断端口是否合法
+     * @param port
+     * @return
+     */
+    public static Boolean isPortIlleagle(Integer port){
+        if(port != 80 || (port > 2000 && port < 65536)){
+            logger.error("端口必须为80或者在2000~65536之间");
+            return false;
+        }
+        return true;
+    }
 }

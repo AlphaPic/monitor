@@ -20,18 +20,14 @@ import java.io.IOException;
 public class SimpleFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("SimpleFilter init");
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println("SimpleFilter handle  1");
         filterChain.doFilter(servletRequest,servletResponse);
-        System.out.println("SimpleFilter handle  2");
     }
 
     @Override
     public void destroy() {
-        System.out.println("SimpleFilter destroy");
     }
 }
