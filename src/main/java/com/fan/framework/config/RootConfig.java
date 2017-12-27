@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * @description:Spring MVC上下文配置的相关类
  */
 @Configuration
+@Import(RedisConfig.class)
 @EnableAspectJAutoProxy
 @ComponentScan(basePackageClasses = {MethodReloadAspect.class,MessageQueueStatusImpl.class},
         excludeFilters = {

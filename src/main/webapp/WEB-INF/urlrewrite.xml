@@ -1,0 +1,9 @@
+<urlrewrite>
+    <rule>
+        <name>对请求地址重定向</name>
+        <condition type="parameter" name="method" operator="notequal">null</condition>
+        <condition type="parameter" name="version" operator="notequal">null</condition>
+        <from>/rest.do</from>
+        <to>/rest/%{parameter:method}/%{parameter:version}</to>
+    </rule>
+</urlrewrite>

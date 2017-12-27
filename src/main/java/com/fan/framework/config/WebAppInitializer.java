@@ -4,6 +4,7 @@ import com.fan.framework.filter.RequestPatternFilter;
 import com.fan.framework.filter.SimpleFilter;
 import com.fan.framework.filter.UserLoginFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import org.tuckey.web.filters.urlrewrite.UrlRewriteFilter;
 
 import javax.servlet.Filter;
 
@@ -50,6 +51,11 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
      */
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[]{new SimpleFilter(),new RequestPatternFilter(),new UserLoginFilter()};
+        return new Filter[]{
+                            new UrlRewriteFilter(),         /** 实现请求的重定向过滤器(用于接口的版本控制) */
+                            new SimpleFilter(),             /** 一个简单的过滤器 */
+                            new RequestPatternFilter(),     /** 请求的模式过滤器 */
+                            new UserLoginFilter()           /** 用户登录过滤器(用于限制用户的访问次数) */
+                           };
     }
 }

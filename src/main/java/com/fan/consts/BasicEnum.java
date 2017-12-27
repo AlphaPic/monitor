@@ -21,6 +21,28 @@ public class BasicEnum {
         LOGOUT;
     }
 
+    /** 用户的权限 */
+    public static enum USER_PERMIT{
+        ADMIN(1),      /** 管理员权限 */
+        COMMON(2),     /** 普通用户权限 */
+        VIEWER(3),     /** 浏览者的权限 */
+        FROZEN(4);     /** 账户被冻结 */
+
+        private Integer permit_code;
+
+        USER_PERMIT(Integer permit_code) {
+            this.permit_code = permit_code;
+        }
+
+        public Integer getPermit_code() {
+            return permit_code;
+        }
+
+        public void setPermit_code(Integer permit_code) {
+            this.permit_code = permit_code;
+        }
+    }
+
     public static void main(String[] args){
         System.out.println(LOGIN_CHANNEL.ANDROID.toString());
     }

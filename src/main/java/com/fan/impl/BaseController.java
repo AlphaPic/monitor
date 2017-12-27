@@ -1,11 +1,14 @@
 package com.fan.impl;
 
 import com.fan.framework.annotation.*;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,9 @@ import java.util.Map;
 @MonitorController
 public class BaseController {
 
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
+
     @RequestMapping(value = "home",method = RequestMethod.GET)
     public String home(){
         return "home";
@@ -27,11 +33,11 @@ public class BaseController {
 
     @RequestMapping(value = "index",method = RequestMethod.GET)
     public String index(){
-        return "index";
+        return "/index";
     }
 
     @ResponseBody
-    @RequestMapping(value = "user",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/api.base.test/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
     public Map<String,Object> json(@RequestParam(value = "name" ,defaultValue = "user")String name){
         Map<String,Object> map = null;
         try {
@@ -45,6 +51,9 @@ public class BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        System.out.println(redisTemplate.opsForValue().get("a"));
+        System.out.println(redisTemplate.opsForValue().get("a"));
+//        System.out.println(cf.getConvertPipelineAndTxResults());
         return map;
     }
 }
