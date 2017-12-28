@@ -41,7 +41,7 @@ public class User implements Serializable{
     /**
      * 权限
      */
-    private Integer permit;
+    private String permit;
     /**
      * 状态
      */
@@ -95,11 +95,11 @@ public class User implements Serializable{
         this.email = email;
     }
 
-    public Integer getPermit() {
+    public String getPermit() {
         return permit;
     }
 
-    public void setPermit(Integer permit) {
+    public void setPermit(String permit) {
         this.permit = permit;
     }
 
@@ -126,8 +126,8 @@ public class User implements Serializable{
                 .append(mobile).append('\"');
         sb.append(",\"email\":\"")
                 .append(email).append('\"');
-        sb.append(",\"permit\":")
-                .append(permit);
+        sb.append(",\"permit\":\"")
+                .append(permit).append('\"');
         sb.append(",\"status\":\"")
                 .append(status).append('\"');
         sb.append('}');

@@ -28,6 +28,9 @@ public class SignatureInterceptor implements HandlerInterceptor{
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(InitConfig.INTERCEPTOR_SIGNATURE_BUTTON == false){
+            return true;
+        }
         if(isDebug(request) == true){
             return true;
         }

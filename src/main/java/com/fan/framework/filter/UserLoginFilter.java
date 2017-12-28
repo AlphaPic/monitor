@@ -41,7 +41,7 @@ public class UserLoginFilter implements Filter{
         HttpServletRequest req  = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         /** 使用开关进行过滤器开关控制 */
-        if(InitConfig.Login_button == false){
+        if(InitConfig.FILTER_LOGIN_BUTTON == false){
             filterChain.doFilter(servletRequest,servletResponse);
             return;
         }

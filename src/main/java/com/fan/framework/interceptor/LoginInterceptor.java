@@ -54,6 +54,10 @@ public class LoginInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
+        /** 开关打开才进入处理，否则直接返回true */
+        if(InitConfig.INTERCEPTOR_LOGIN_BUTTON == false){
+            return true;
+        }
         /** 这一步骤实现上述的1,2两步 */
         Long userId = getUserIdFromCache(request);
         if(userId == -1){

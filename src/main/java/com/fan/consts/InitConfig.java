@@ -9,7 +9,13 @@ package com.fan.consts;
  */
 public interface InitConfig {
     /** 过滤器开关控制 */
-    public final Boolean Login_button = false;  //登录过滤器的开关控制
+    public final Boolean FILTER_LOGIN_BUTTON           = false;  //登录过滤器的开关控制(true打开,false关闭)
+    public final Boolean FILTER_REQUEST_PATTERN_BUTTON = false;  //请求表达式过滤器开关控制(true打开,false关闭)
+    public final Boolean FILTER_SIMPLE_BUTTON          = false;  //简单的过滤器控制(true打开,false关闭)
+
+    /** 拦截器开关控制 */
+    public final Boolean INTERCEPTOR_LOGIN_BUTTON      = false;  //登录拦截器开关控制(true打开,false关闭)
+    public final Boolean INTERCEPTOR_SIGNATURE_BUTTON  = false;  //签名拦截器的开关控制(true打开,false关闭)
 
     /** JSP viewResolver的匹配 */
     public final String JspResolverPrefix = "/WEB-INF/";        //前缀
@@ -17,7 +23,7 @@ public interface InitConfig {
 
     /** 登录拦截器匹配路径 */
     public final String LoginInterceptorPattern_0 = "/*";
-    public final String SigantureInterceptorPattern = "/*";
+    public final String SignatureInterceptorPattern = "/*";
 
     /** 正则匹配 */
     public final String ip4Pattern = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}";//是否是正确的ip
@@ -55,4 +61,13 @@ public interface InitConfig {
     public final Integer REDIS_PORT = 6379;              /** redis端口 */
     public final String REDIS_AUTH  = null;              /** 密码 */
     public final Integer REDIS_TIMEOUT = 100;            /** 超时时间 */
+
+    /** 数据库相关配置 */
+    /** Mysql */
+    public final String MYSQL_DRIVER    = "com.mysql.jdbc.Driver";                  /** mysql驱动名称 */
+    public final String MYSQL_URL       = "jdbc:mysql://127.0.0.1:3306/monitor";    /** mysql驱动url */
+    public final String MYSQL_USERNAME  = "root";                                   /** mysql用户名 */
+    public final String MYSQL_PASSWORD  = "xiwang1992";                                 /** mysql密码 */
+
+    public final String MYSQL_ENVIRONMENT   = "mysqlEnvironment";                   /** mysql的环境名称 */
 }

@@ -1,5 +1,6 @@
 package com.fan.framework.filter;
 
+import com.fan.consts.InitConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,10 @@ public class RequestPatternFilter implements Filter{
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        chain.doFilter(request,response);
+        if(InitConfig.FILTER_REQUEST_PATTERN_BUTTON == false) {
+            chain.doFilter(request, response);
+            return;
+        }
     }
 
     @Override

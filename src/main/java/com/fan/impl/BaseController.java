@@ -1,6 +1,10 @@
 package com.fan.impl;
 
+import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
 import com.fan.framework.annotation.*;
+import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,9 +26,13 @@ import java.util.Map;
  */
 @MonitorController
 public class BaseController {
+    private static final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private SqlSession sqlSession;
 
     @RequestMapping(value = "home",method = RequestMethod.GET)
     public String home(){
@@ -33,7 +41,7 @@ public class BaseController {
 
     @RequestMapping(value = "index",method = RequestMethod.GET)
     public String index(){
-        return "/index";
+        return "index";
     }
 
     @ResponseBody
@@ -52,8 +60,12 @@ public class BaseController {
             e.printStackTrace();
         }
 //        System.out.println(redisTemplate.opsForValue().get("a"));
-        System.out.println(redisTemplate.opsForValue().get("a"));
+//        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(cf.getConvertPipelineAndTxResults());
+//        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        System.out.println(mapper.getUserInfoByUserId(1));
+//        logger.info(String.valueOf(mapper.getUserInfo(1)));
         return map;
     }
 }

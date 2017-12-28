@@ -49,7 +49,7 @@ public class WebConfig extends WebMvcConfigurerAdapter{
     public void addInterceptors(InterceptorRegistry registry){
         /** 添加拦截器，并且过滤所有的请求 */
         registry.addInterceptor(loginInterceptor).addPathPatterns(InitConfig.LoginInterceptorPattern_0);
-        registry.addInterceptor(signatureInterceptor).addPathPatterns(InitConfig.SigantureInterceptorPattern);
+        registry.addInterceptor(signatureInterceptor).addPathPatterns(InitConfig.SignatureInterceptorPattern);
     }
 
     /**

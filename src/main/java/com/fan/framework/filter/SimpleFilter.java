@@ -1,5 +1,6 @@
 package com.fan.framework.filter;
 
+import com.fan.consts.InitConfig;
 import com.fan.utils.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -24,7 +25,10 @@ public class SimpleFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        filterChain.doFilter(servletRequest,servletResponse);
+        if(InitConfig.FILTER_SIMPLE_BUTTON == false) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
     }
 
     @Override
