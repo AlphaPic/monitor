@@ -16,8 +16,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  */
 @Configuration
 @Import({RedisConfig.class,
-         DataBaseConfig.class})
-@EnableAspectJAutoProxy
+         DataBaseConfig.class,
+         ZooKeeperConfig.class,
+         KafkaConfig.class})
 @ComponentScan(basePackageClasses = {MethodReloadAspect.class,MessageQueueStatusImpl.class},
         excludeFilters = {
             @ComponentScan.Filter(type = FilterType.ANNOTATION,value = EnableWebMvc.class)

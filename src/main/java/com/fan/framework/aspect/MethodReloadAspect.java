@@ -20,11 +20,11 @@ import org.springframework.stereotype.Component;
 @Order(0)
 @Component
 public class MethodReloadAspect {
-    @Pointcut("@target(org.springframework.web.bind.annotation.RequestMapping)")
-    public void monitorController(){}
+    @Pointcut("@annotation(com.fan.framework.annotation.Auth)")
+    public void Identification(){}
 
-    @Around(value = "monitorController() && args(request,..)")
-    public Object methodReload(ProceedingJoinPoint jp, BaseRequest request){
+    @Around(value = "Identification() && args(request)")
+    public Object methodReload(ProceedingJoinPoint jp,String request){
         System.out.println("before");
         Object object = null;
         try {

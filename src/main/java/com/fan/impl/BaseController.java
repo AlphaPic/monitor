@@ -1,8 +1,16 @@
 package com.fan.impl;
 
+import com.fan.consts.AuthEnum;
+import com.fan.consts.InitConfig;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
 import com.fan.framework.annotation.*;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -34,6 +43,15 @@ public class BaseController {
     @Autowired
     private SqlSession sqlSession;
 
+    @Autowired
+    private ZooKeeper zk;
+
+    @Autowired
+    private KafkaProducer<String,String> producer;
+
+    @Autowired
+    private KafkaConsumer<String,String> consumer;
+
     @RequestMapping(value = "home",method = RequestMethod.GET)
     public String home(){
         return "home";
@@ -46,6 +64,7 @@ public class BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/api.base.test/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
+    @Auth(AuthEnum.FORCE)
     public Map<String,Object> json(@RequestParam(value = "name" ,defaultValue = "user")String name){
         Map<String,Object> map = null;
         try {
@@ -63,9 +82,23 @@ public class BaseController {
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(cf.getConvertPipelineAndTxResults());
 //        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
-        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
-        System.out.println(mapper.getUserInfoByUserId(1));
+//        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+//        System.out.println(mapper.getUserInfoByUserId(1));
 //        logger.info(String.valueOf(mapper.getUserInfo(1)));
+//        logger.info(String.valueOf(zk.getState().isAlive()));
+//        logger.info("----------------");
+//        for(int i = 0;i < 10;i++) {
+//            producer.send(new ProducerRecord<String, String>("key" + i,"value" + i));
+//        }
+//        producer.close();
+//        ConsumerRecords<String,String> consumerRecords = consumer.poll(InitConfig.KAFKA_CONSUMER_RECORDS_TIMEOUT);
+//        Iterator iterator = consumerRecords.iterator();
+//        while (iterator.hasNext()){
+//            ConsumerRecord record = (ConsumerRecord) iterator.next();
+//            System.out.println(record.key() + ":" + record.value());
+//        }
+//        logger.info("----------------");
+
         return map;
     }
 }
