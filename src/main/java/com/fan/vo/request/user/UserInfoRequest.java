@@ -1,6 +1,6 @@
 package com.fan.vo.request.user;
 
-import com.fan.dao.model.BaseRequest;
+import com.fan.dao.model.AlphaRequest;
 
 /**
  * @author:fanwenlong
@@ -9,7 +9,7 @@ import com.fan.dao.model.BaseRequest;
  * @mobile:186-0307-4401
  * @description:用户登录信息请求
  */
-public class UserInfoRequest extends BaseRequest{
+public class UserInfoRequest extends AlphaRequest {
     private static final long serialVersionUID = -5138136194619438945L;
 
     /**

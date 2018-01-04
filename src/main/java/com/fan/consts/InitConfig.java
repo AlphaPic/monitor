@@ -81,7 +81,7 @@ public interface InitConfig {
     String  KAFKA_COMMON_BOOTSTRAP_SERVER           = "localhost:19921";                                            /** kafka服务器的url */
     String  KAFKA_COMMON_TOPIC                      = "topic_for_test";                                             /** 测试的主题 */
 
-    /** Producer配置 */
+    /** Kafka的Producer配置 */
     String  KAFKA_PRODUCER_ACKS                     = "all";                                                         /**  */
     Integer KAFKA_PRODUCER_RETRIES                  = 0;                                                             /** 表明重发的次数为0 */
     Integer KAFKA_PRODUCER_BATCH_SIZE               = 16384;                                                         /** 未发送成功的消息存放的缓存的大小 */
@@ -90,11 +90,24 @@ public interface InitConfig {
     String  KAFKA_PRODUCER_KEY_SERIALIZER           = "org.apache.kafka.common.serialization.StringSerializer";      /** 键的序列化工具 */
     String  KAFKA_PRODUCER_VALUE_SERIALIZER         = "org.apache.kafka.common.serialization.StringSerializer";      /** 值的序列化工具 */
 
-    /** Consumer配置 */
+    /** Kafka的Consumer配置 */
     String KAFKA_CONSUMER_GROUP_ID                  = "test";                                                        /** 所属组的id */
     String KAFKA_CONSUMER_ENABLE_AUTO_COMMIT        = "true";                                                        /** 是否允许自动提交 */
     String KAFKA_CONSUMER_AUTO_COMMIT_INTERVAL_MS   = "1000";                                                        /** 自动提交间隔 */
     String KAFKA_CONSUMER_KEY_DESERIALIZER          = "org.apache.kafka.common.serialization.StringDeserializer";    /** 键的反序列化工具 */
     String KAFKA_CONSUMER_VALUE_DESERIALIZER        = "org.apache.kafka.common.serialization.StringDeserializer";    /** 值的反序列化工具 */
     Long   KAFKA_CONSUMER_RECORDS_TIMEOUT           = 1000L;                                                         /** 获取消息的超时时间 */
+
+    /** ActiveMQ的相关配置 */
+    String ACTIVEMQ_USERNAME                       = "admin";                                                        /** activeMQ用户名 */
+    String ACTIVEMQ_PASSWORD                       = "admin";                                                        /** activeMQ密码 */
+    String ACTIVEMQ_BROKENURL                      = "localhost:8161";                                               /** activeMQ的连接地址 */
+    String ACTIVEMQ_DEFAULT_QUEUE                  = "QUEUE1";                                                       /** activeMQ的目标队列 */
+
+    /** 邮件的相关配置 */
+    String  MAIL_QQ_SMTP_HOST                       = "smtp.qq.com";                                                  /** QQ的smtp的主机 */
+    Integer MAIL_QQ_SMTP_PORT                       = 1;
+    String  MAIL_QQ_SMTP_USERNAME                   = "1693293713@qq.com";                                            /** 邮箱名称 */
+    String  MAIL_QQ_SMTP_AUTHCODE                   = "kwfitspfcxpmbaji";                                             /** 授权码 */
+//    String  MAIL_QQ_SMTP_
 }

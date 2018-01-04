@@ -1,6 +1,6 @@
 package com.fan.vo.request.user;
 
-import com.fan.dao.model.BaseRequest;
+import com.fan.dao.model.AlphaRequest;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @mobile:186-0307-4401
  * @description:用户cookie的请求
  */
-public class CookieRequest extends BaseRequest {
+public class CookieRequest extends AlphaRequest {
     private static final long serialVersionUID = 4962767525573900461L;
 
     /**

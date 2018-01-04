@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @mobile:186-0307-4401
  * @description:基本的请求
  */
-public class BaseRequest implements Serializable{
+public class AlphaRequest implements Serializable{
     private static final long serialVersionUID = 2048883537513472445L;
 
     /**

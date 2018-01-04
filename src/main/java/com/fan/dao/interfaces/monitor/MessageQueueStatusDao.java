@@ -1,9 +1,8 @@
 package com.fan.dao.interfaces.monitor;
 
-import com.fan.dao.model.BaseResponse;
+import com.fan.dao.model.AlphaResponse;
 import com.fan.dao.model.request.MessageQueueStatusRequest;
 import com.fan.dao.model.response.MessageQueueStatusResponse;
-import org.springframework.validation.Errors;
 
 /**
  * @author:fanwenlong
@@ -18,5 +17,5 @@ public interface MessageQueueStatusDao {
      * @param request
      * @return
      */
-    public BaseResponse<MessageQueueStatusResponse> getMessageQueueStatusInfo(MessageQueueStatusRequest request);
+    public AlphaResponse<MessageQueueStatusResponse> getMessageQueueStatusInfo(MessageQueueStatusRequest request);
 }

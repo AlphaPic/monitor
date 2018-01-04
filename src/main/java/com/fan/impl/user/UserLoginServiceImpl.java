@@ -5,7 +5,7 @@ import com.fan.consts.BasicEnum;
 import com.fan.consts.EncryptEnum;
 import com.fan.consts.InitConfig;
 import com.fan.dao.interfaces.user.IUserLoginService;
-import com.fan.dao.model.BaseResponse;
+import com.fan.dao.model.AlphaResponse;
 import com.fan.framework.annotation.Auth;
 import com.fan.framework.annotation.MonitorController;
 import com.fan.utils.*;
@@ -45,7 +45,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
     @RequestMapping(value = "com.fan.user.Login",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.UNCESSARY)
     @Override
-    public BaseResponse<Boolean> login(UserLoginRequest request) {
+    public AlphaResponse<Boolean> login(UserLoginRequest request) {
         String cookie = request.getMonitorCookie();
         String userName = request.getUserName();
         String password = request.getPassword();
@@ -53,20 +53,20 @@ public class UserLoginServiceImpl implements IUserLoginService{
         String redisValue = RedisUtils.getRedisValue(cookie);
         if(StringUtils.isEmpty(redisValue)){
             logger.error("cookie已经过期，请重新去请求cookie");
-            return BaseResponse.error("-1","cookie已经过期");
+            return AlphaResponse.error("-1","cookie已经过期");
         }
         String loginInfo = userName + password;
         /** 利用用户名 + 密码计算比对数据库的hash */
         String passwordHash = EncryptUtils.generateHash(EncryptEnum.MD5,loginInfo);
         if(DBUtils.userIlleagle(userName,passwordHash)){
             logger.error("用户名或者密码错误,userName = " + userName + ",password = " + password);
-            return BaseResponse.error("-1","用户名或者密码非法");
+            return AlphaResponse.error("-1","用户名或者密码非法");
         }
         /** 设置本cookie的redis值过期时间为30分钟 */
         String value = BasicEnum.LOGIN_STATUS.LOGIN.toString();
         RedisUtils.setStringValue(cookie,value, InitConfig.userSurviveTime);
         logger.info("用户名为" + userName + "登录成功!!!");
-        return BaseResponse.success(true);
+        return AlphaResponse.success(true);
     }
 
     /**
@@ -81,21 +81,21 @@ public class UserLoginServiceImpl implements IUserLoginService{
     @RequestMapping(value = "com.fan.user.getCookie",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.UNCESSARY)
     @Override
-    public BaseResponse<String> getLoginCookie(CookieRequest request) {
+    public AlphaResponse<String> getLoginCookie(CookieRequest request) {
         logger.info("正在调用获取cookie的方法");
         String ip = request.getIp();
         String channel = request.getLoginChannel();
 
         if(InternetUtils.isIpIlleagle(ip) || InternetUtils.isChannelIlleagle(channel)){
             logger.error("用户输入的ip或者请求通道非法,ip = " + ip + ",channel = " + channel);
-            return BaseResponse.error("-1","用户输入的ip或者请求通道非法,ip = " + ip + ",channel = " + channel);
+            return AlphaResponse.error("-1","用户输入的ip或者请求通道非法,ip = " + ip + ",channel = " + channel);
         }
         /** 获取用户名和密码 */
         String username = request.getUserName();
         String password = request.getPassword();
         if(InternetUtils.isUserNameIlleagle(username) || InternetUtils.isPasswordIlleagle(password)){
             logger.error("用户名或者密码不合法,username = " + username + ",password = " + password);
-            return BaseResponse.error("-1","用户名或者密码不合法,username = " + username + ",password = " + password);
+            return AlphaResponse.error("-1","用户名或者密码不合法,username = " + username + ",password = " + password);
         }
         /** 获取当前系统的时间，作为生成cookie的hash的一部分 */
         Long timeStamp = System.currentTimeMillis();
@@ -111,12 +111,12 @@ public class UserLoginServiceImpl implements IUserLoginService{
         String hexCookie = EncryptUtils.exchangeTentoHex(cookie);
         if(StringUtils.isEmpty(hexCookie)){
             logger.error("生成的cookie不对,cookie = " + cookie);
-            return BaseResponse.error("-1","生成的cookie不对，请重新生成");
+            return AlphaResponse.error("-1","生成的cookie不对，请重新生成");
         }
         if(RedisUtils.setStringValue(hexCookie, redisValue, redisTime) == true){
-            return BaseResponse.success(hexCookie,"生成了cookie,这个cookie将维持" + redisTime + "秒");
+            return AlphaResponse.success(hexCookie,"生成了cookie,这个cookie将维持" + redisTime + "秒");
         } else {
-            return BaseResponse.error("-1","你所生成的cookie没有放到缓存，请稍后再试");
+            return AlphaResponse.error("-1","你所生成的cookie没有放到缓存，请稍后再试");
         }
     }
 
@@ -131,18 +131,18 @@ public class UserLoginServiceImpl implements IUserLoginService{
     @RequestMapping(value = "com.fan.user.cancel",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.FORCE)
     @Override
-    public BaseResponse<Boolean> cancelLogin(CancelRequest request) {
+    public AlphaResponse<Boolean> cancelLogin(CancelRequest request) {
         String cookie = request.getMonitorCookie();
         String cookieValue = RedisUtils.getRedisValue(cookie);
         if(StringUtils.isEmpty(cookieValue)){
             logger.error("用户的cookie不存在");
-            return BaseResponse.error("-1","用户的cookie不存在");
+            return AlphaResponse.error("-1","用户的cookie不存在");
         }
         if(RedisUtils.deleteRedisKey(cookie) == false){
             logger.error("删除用户的登录信息失败");
-            return BaseResponse.error("-1","退出登录失败");
+            return AlphaResponse.error("-1","退出登录失败");
         }
-        return BaseResponse.error("-1","取消登录成功");
+        return AlphaResponse.error("-1","取消登录成功");
     }
 
     /**
@@ -156,20 +156,20 @@ public class UserLoginServiceImpl implements IUserLoginService{
     @RequestMapping(value = "com.fan.user.getInfo",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.FORCE)
     @Override
-    public BaseResponse<UserInfoResponseVo> getUserInfo(UserInfoRequest request) {
-        BaseResponse<UserInfoResponseVo> response = new BaseResponse<UserInfoResponseVo>();
+    public AlphaResponse<UserInfoResponseVo> getUserInfo(UserInfoRequest request) {
+        AlphaResponse<UserInfoResponseVo> response = new AlphaResponse<UserInfoResponseVo>();
         UserInfoResponseVo responseVo = new UserInfoResponseVo();
         response.setDate(responseVo);
 
         String cookie = request.getMonitorCookie();
         if(StringUtils.isEmpty(cookie)){
             logger.error("用户的登录cookie不能为空");
-            return BaseResponse.error("-1","用户的登录cookie不能为空");
+            return AlphaResponse.error("-1","用户的登录cookie不能为空");
         }
         Object user = DBUtils.getUserInfo(request.getUserId());
         if(user == null){
             logger.error("用户不存在");
-            return BaseResponse.error("-1","用户不存在");
+            return AlphaResponse.error("-1","用户不存在");
         }
         /** 拷贝用户属性 */
         BeanUtils.copyProperties(user,responseVo);

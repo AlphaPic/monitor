@@ -19,18 +19,18 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class ZooKeeperConfig {
-    private static final Logger logger = LoggerFactory.getLogger(ZooKeeperConfig.class);
-
-    @Bean
-    public ZooKeeper getZooKeeper(){
-        String  url     = InitConfig.ZK_SERVER_IP + ":" + InitConfig.ZK_SERVER_PORT;
-        Integer timeout = InitConfig.ZK_TIMEOUT;
-        ZooKeeper zk = null;
-        try {
-             zk = new ZooKeeper(url, timeout, null);
-        }catch (Exception e){
-            logger.error("创建zookeeper失败");
-        }
-        return zk;
-    }
+//    private static final Logger logger = LoggerFactory.getLogger(ZooKeeperConfig.class);
+//
+//    @Bean
+//    public ZooKeeper getZooKeeper(){
+//        String  url     = InitConfig.ZK_SERVER_IP + ":" + InitConfig.ZK_SERVER_PORT;
+//        Integer timeout = InitConfig.ZK_TIMEOUT;
+//        ZooKeeper zk = null;
+//        try {
+//             zk = new ZooKeeper(url, timeout, null);
+//        }catch (Exception e){
+//            logger.error("创建zookeeper失败");
+//        }
+//        return zk;
+//    }
 }

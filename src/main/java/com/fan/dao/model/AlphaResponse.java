@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @description:基本的响应
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class BaseResponse<T> implements Serializable{
+public class AlphaResponse<T> implements Serializable{
     private static final long serialVersionUID = 4719166322183167850L;
 
     private String code = "1";
@@ -22,34 +22,34 @@ public class BaseResponse<T> implements Serializable{
 
     private T date;
 
-    public BaseResponse(T date, String code, String message, String errorMessage) {
+    public AlphaResponse(T date, String code, String message, String errorMessage) {
         this.code = code;
         this.message = message;
         this.errorMessage = errorMessage;
         this.date = date;
     }
 
-    public BaseResponse() {
+    public AlphaResponse() {
     }
 
-    public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<T>(data, "1", null, null);
+    public static <T> AlphaResponse<T> success(T data) {
+        return new AlphaResponse<T>(data, "1", null, null);
     }
 
-    public static <T> BaseResponse<T> success(T data, String message) {
-        return new BaseResponse<T>(data, "1", message, null);
+    public static <T> AlphaResponse<T> success(T data, String message) {
+        return new AlphaResponse<T>(data, "1", message, null);
     }
 
-    public static <T> BaseResponse<T> success(String code, T data,String message,String errorMessage) {
-        return new BaseResponse<T>(data, code, message, errorMessage);
+    public static <T> AlphaResponse<T> success(String code, T data, String message, String errorMessage) {
+        return new AlphaResponse<T>(data, code, message, errorMessage);
     }
 
-    public static <T> BaseResponse<T> error(String code, String errorMessage) {
-        return new BaseResponse<T>(null, code, errorMessage, errorMessage);
+    public static <T> AlphaResponse<T> error(String code, String errorMessage) {
+        return new AlphaResponse<T>(null, code, errorMessage, errorMessage);
     }
 
-    public static <T> BaseResponse<T> error(String code, String message, String errorMessage) {
-        return new BaseResponse<T>(null, code, message, errorMessage);
+    public static <T> AlphaResponse<T> error(String code, String message, String errorMessage) {
+        return new AlphaResponse<T>(null, code, message, errorMessage);
     }
 
     public String getCode() {

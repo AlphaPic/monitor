@@ -1,7 +1,7 @@
 package com.fan.dao.model.request;
 
 
-import com.fan.dao.model.BaseRequest;
+import com.fan.dao.model.AlphaRequest;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @mobile:186-0307-4401
  * @description:消息队列状态请求
  */
-public class MessageQueueStatusRequest extends BaseRequest{
+public class MessageQueueStatusRequest extends AlphaRequest {
     private static final long serialVersionUID = -4608447012023024362L;
 
     @NotNull(message = "name can't be null")

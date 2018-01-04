@@ -1,7 +1,6 @@
 package com.fan.dao.interfaces.user;
 
-import com.fan.dao.model.BaseRequest;
-import com.fan.dao.model.BaseResponse;
+import com.fan.dao.model.AlphaResponse;
 import com.fan.vo.request.user.CancelRequest;
 import com.fan.vo.request.user.CookieRequest;
 import com.fan.vo.request.user.UserInfoRequest;
@@ -22,21 +21,21 @@ public interface IUserLoginService {
      * @param request
      * @return
      */
-    public BaseResponse<Boolean> login(UserLoginRequest request);
+    public AlphaResponse<Boolean> login(UserLoginRequest request);
 
     /**
      * 获取登录的cookie作为登录凭证
      * @param request
      * @return
      */
-    public BaseResponse<String> getLoginCookie(CookieRequest request);
+    public AlphaResponse<String> getLoginCookie(CookieRequest request);
 
     /**
      * 取消登录
      * @param request
      * @return
      */
-    public BaseResponse<Boolean> cancelLogin(CancelRequest request);
+    public AlphaResponse<Boolean> cancelLogin(CancelRequest request);
 
 
     /**
@@ -44,5 +43,5 @@ public interface IUserLoginService {
      * @param request
      * @return
      */
-    public BaseResponse<UserInfoResponseVo> getUserInfo(UserInfoRequest request);
+    public AlphaResponse<UserInfoResponseVo> getUserInfo(UserInfoRequest request);
 }
