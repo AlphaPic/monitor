@@ -1,23 +1,31 @@
 package com.fan.impl.user;
 
 import com.fan.consts.BasicEnum;
+import com.fan.consts.InitConfig;
 import com.fan.consts.UserConfig;
 import com.fan.dao.interfaces.baseService.IMailService;
 import com.fan.dao.interfaces.user.IUserRegistryService;
 import com.fan.dao.model.AlphaResponse;
+import com.fan.dao.model.basicService.AlphaMessageInfo;
 import com.fan.dao.model.request.ActivateUserRequest;
 import com.fan.dao.model.request.RegistryCodeRequest;
 import com.fan.dao.model.request.RegistryMediaRequest;
 import com.fan.dao.model.request.RegistryRequest;
 import com.fan.dao.model.response.RegistryMediaResponse;
 import com.fan.framework.annotation.MonitorController;
+import com.fan.utils.RandomUtils;
+import org.omg.CORBA.TIMEOUT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @author:fanwenlong
@@ -36,16 +44,19 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
     /**
      * 获取验证码
      * @param request
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/api.user.registry.getAuthCode/1.0",method = {RequestMethod.GET})
+    @RequestMapping(value = "/api.user.registry.getAuthCode/1.0.0",method = {RequestMethod.GET})
     @Override
-    public AlphaResponse<Boolean> getRegistryCode(RegistryMediaRequest request) {
-        AlphaResponse<Boolean> response = new AlphaResponse<Boolean>();
+    public AlphaResponse<RegistryMediaResponse> getRegistryCode(RegistryMediaRequest request) {
+        AlphaResponse<RegistryMediaResponse> response = new AlphaResponse<RegistryMediaResponse>();
+        RegistryMediaResponse responseVo = new RegistryMediaResponse();
+        response.setDate(responseVo);
         String registryType = request.getRegistryType();            /** 注册类型 */
         String email        = request.getMail();                    /** email */
         String mobile       = request.getMobile();                  /** 手机号 */
@@ -61,48 +72,204 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                     return AlphaResponse.error("-1","邮箱账户已存在");
                 }
                 /** 判断是不是可以发送验证码 */
-                String emailLockKey = UserConfig.REGISTRY_EMAIL_ACCOUNT_LOCK + email;
+                String emailLockKey = UserConfig.REDIS_REGISTRY_ACCOUNT_LOCK + email;
                 try{
                     String emailLockValue = redisTemplate.opsForValue().get(emailLockKey);
-                    if(false == Boolean.valueOf(emailLockValue)){
-                        logger.error("您今天注册太过于频繁了，请明天再试");
+                    if(StringUtils.isEmpty(emailLockValue) == false && true == Boolean.valueOf(emailLockValue)){
+                        logger.error("您注册太过频繁，请稍后再试" + emailLockValue);
+                        return AlphaResponse.error("-1","您注册太过频繁，请稍后再试");
                     }
                 }catch (Exception e){
-                    logger.error("无法获取用户是否能够继续注册的信息，");
+                    logger.error("无法获取用户是否能够继续注册的信息，请稍后再试" + e.getMessage());
+                    return AlphaResponse.error("-1","获取注册账户信息失败,请重试");
                 }
                 /** 发送验证码 */
+                AlphaMessageInfo messageInfo = new AlphaMessageInfo();
+                /** 暂时将发送邮件的服务器设置为QQ服务器-_-! */
+                messageInfo.setFrom(InitConfig.MAIL_QQ_SMTP_USERNAME);
+                messageInfo.setMultiSender(false);
+                messageInfo.setSingleDest(email);
+                /** 获取随机的8位数字 */
+                String authCode = RandomUtils.getRandomNumber(8);
+                messageInfo.setText(authCode);
+                try {
+                    mailService.sendASingleMail(messageInfo);
+                }catch (Exception e){
+                    logger.error("发送邮件失败" + e.getMessage());
+                    return AlphaResponse.error("-1","发送邮件失败，请稍后再试");
+                }
+                String alphaCookie = RandomUtils.getAlphaCookie();
+                /** 获取验证码成功
+                 *  1.将验证码放置到redis缓存之中,并保存60S
+                 *  2.设置当前邮件地址锁住60s */
+                String authCodeSurviveInfo = UserConfig.REDIS_REGISTRY_EMAIL_ACCOUNT_AUTHCODE + alphaCookie;
+                try{
+                    redisTemplate.opsForValue().set(authCodeSurviveInfo,authCode,UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT, TimeUnit.SECONDS);   /** 验证码过期时间 */
+                    redisTemplate.opsForValue().set(emailLockKey,"true",UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT, TimeUnit.SECONDS);           /** email锁住的时间 */
+                    /** cookie和邮箱之间必须建立联系，这样就可以在注册的时候直接拿到email的值 */
+                    String cookieAccount = UserConfig.REDIS_REGISTRY_ACCOUNT_BIND_COOKIE + alphaCookie;
+                    redisTemplate.opsForValue().set(cookieAccount,email,UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT,TimeUnit.SECONDS);
+                }catch (Exception e){
+                    logger.error("设置验证码出错" + e.getMessage());
+                    return AlphaResponse.error("-1","设置验证码出错,请重新获取邮件");
+                }
+                responseVo.setSuccess(true);
+                responseVo.setAlphaCookie(alphaCookie);
+                response.setMessage("邮件发送成功");
                 break;
             case MOBILE:
                 return AlphaResponse.error("-1","抱歉,手机注册还未开发");
             default:
                 return AlphaResponse.error("-1","不支持的注册类型");
         }
+        return response;
+    }
 
+
+    /**
+     * 校验验证码
+     * 校验验证码为使得cookie获取注册权限的过程，当用户的cookie被成功验证之后，就可以继续往下面走注册流程了
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/api.user.registry.verifyRegistryCode/1.0.0",method = {RequestMethod.GET})
+    @Override
+    public AlphaResponse<Boolean> verifyRegistryCode(RegistryCodeRequest request) {
+        String cookie   = request.getAlphaCookie();
+        String authCode = request.getAuthCode();
+        AlphaResponse<Boolean> response = new AlphaResponse<Boolean>();
+
+        String redisCookieKey = UserConfig.REDIS_REGISTRY_EMAIL_ACCOUNT_AUTHCODE + cookie;
+        try{
+            String cookieValue = redisTemplate.opsForValue().get(redisCookieKey);
+            /** 必须获取到账户的信息，获取不到则重新获取 */
+            String cookieAccount = UserConfig.REDIS_REGISTRY_ACCOUNT_BIND_COOKIE + cookie;
+            String accountName  = redisTemplate.opsForValue().get(cookieAccount);
+            if(StringUtils.isEmpty(cookieValue) || StringUtils.isEmpty(accountName)){
+                logger.error("找不到cookie相关的数据");
+                response.setDate(false);
+                response.setCode("-1");
+                response.setErrorMessage("验证码已过期");
+                return response;
+            }
+            int index = cookieValue.lastIndexOf('_');
+            String authTemp = cookieValue.substring(index + 1);
+            if(authTemp != null && authTemp.equals(authCode) == false){
+                response.setDate(false);
+                response.setErrorMessage("验证码错误");
+                response.setCode("-2");
+                return response;
+            }
+
+
+
+            /** 运行到这里来了，表示已经验证成功，该cookie取得了注册权限 */
+            String loadPermit = UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT + cookie;
+
+            redisTemplate.opsForValue().set(loadPermit,"true",UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT_TIME,TimeUnit.SECONDS);
+            /** 在这里必须对email和cookie之间绑定的进行重新赋值，时间为300s */
+            redisTemplate.opsForValue().set(cookieAccount,accountName,UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT_TIME,TimeUnit.SECONDS);
+            response.setDate(true);
+            response.setMessage("验证成功,可以去注册用户了");
+        }catch (Exception e){
+            logger.error("获取redis数据出错");
+            return AlphaResponse.error("-1","内部操作异常,请稍后再试");
+        }
         return response;
     }
 
     /**
-     * 校验验证码的正确性
+     * 注册用户,用于必须具有注册权限
      * @param request
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/api.user.registry.verifyRegistryCode/1.0",method = {RequestMethod.GET})
+    @RequestMapping(value = "/api.user.registry.registry/1.0.0",method = {RequestMethod.GET})
     @Override
-    public AlphaResponse<Boolean> verifyRegistryCode(RegistryCodeRequest request) {
-        return null;
+    public AlphaResponse<Boolean> registry(RegistryRequest request) {
+        AlphaResponse<Boolean> response = new AlphaResponse<Boolean>();
+        String alphaCookie = request.getAlphaCookie();
+        /** 验证cookie是不是拥有注册的权限，没有的话，则继续上一步骤去获取验证码并且验证 */
+        String registryPermitKey = UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT + alphaCookie;
+        try{
+            String registryPermitValue = redisTemplate.opsForValue().get(registryPermitKey);
+            if(StringUtils.isEmpty(registryPermitKey) || "true".equals(registryPermitKey) != true){
+                logger.error("用户注册的窗口时间已经过了，请重新获取验证码");
+                response.setDate(false);
+                response.setCode("-1");
+                response.setErrorMessage("用户注册的窗口时间已经过了，请重新获取验证码");
+                return response;
+            }
+            /** 校验用户的入参，入参使用spring本身的特性进行校验，这里只校验可选入参,注册时的参数分为必输参数和可选参数 */
+            if(verifyRegistryInfo(request) == false){
+                response.setDate(false);
+                response.setCode("-2");
+                response.setMessage("非必须参数必须全部为空或者全部有值");
+                return response;
+            }
+            /** 通过缓存获取注册渠道 */
+            BasicEnum.REGISTRY_TYPE type = getRegistryChannel(registryPermitValue);
+            if(type == BasicEnum.REGISTRY_TYPE.UNKNOWNTYPE || type == BasicEnum.REGISTRY_TYPE.MOBILE){
+                logger.error("暂时不支持的注册类型");
+                return AlphaResponse.error("-1","目前只支持邮箱注册");
+            }
+            String email = request.getEmail();
+            if(email.equals(registryPermitValue) == false){
+                logger.error("邮箱有错" + registryPermitValue);
+                return AlphaResponse.error("-1","邮箱有错，请重新获取验证码");
+            }
+
+        }catch (Exception e){
+            logger.error("redis读取出现异常",e.getMessage());
+            return AlphaResponse.error("-1","抱歉，系统内部出现异常，请稍后再试");
+        }
+
+        /** 必输参数必传，没有则报错 */
+        /** 根据注册方式选择是否激活用户，email用户不激活，其它情况激活用户 */
+        /** 可选参数假如传入了，则在写入数据库中的时候必须与必输参数写在同一个事务之中 */
+        /** 传输成功，则发出一个注册成功的消息到消息队列,消息队列暂时不做复杂的处理 */
+        return response;
     }
 
     /**
-     * 注册用户
+     * 获取注册通道类型
+     * @param channel
+     * @return
+     */
+    private BasicEnum.REGISTRY_TYPE getRegistryChannel(String channel){
+        Pattern mobilePattern = Pattern.compile(InitConfig.mobilePattern);
+        Pattern emailPattern  = Pattern.compile(InitConfig.emailPattern);
+        if(mobilePattern.matcher(channel).matches()){
+            return BasicEnum.REGISTRY_TYPE.MOBILE;
+        }else if(emailPattern.matcher(channel).matches()){
+            return BasicEnum.REGISTRY_TYPE.MAIL;
+        }else{
+            return BasicEnum.REGISTRY_TYPE.UNKNOWNTYPE;
+        }
+    }
+
+    /**
+     * 校验非必须参数的合法性
      * @param request
      * @return
      */
-    @ResponseBody
-    @RequestMapping(value = "/api.user.registry.registry/1.0",method = {RequestMethod.GET})
-    @Override
-    public AlphaResponse<Boolean> registry(RegistryRequest request) {
-        return null;
+    private Boolean verifyRegistryInfo(RegistryRequest request){
+        String country     = request.getCountry();
+        String province    = request.getProvince();
+        String city        = request.getCity();
+        String street      = request.getStreet();
+        String collage     = request.getCollage();
+        String company     = request.getCompany();
+        if(StringUtils.isEmpty(country) ||
+                StringUtils.isEmpty(province) ||
+                StringUtils.isEmpty(city) ||
+                StringUtils.isEmpty(street) ||
+                StringUtils.isEmpty(collage) ||
+                StringUtils.isEmpty(company)){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -111,7 +278,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/api.user.registry.activateUser/1.0",method = {RequestMethod.GET})
+    @RequestMapping(value = "/api.user.registry.activateUser/1.0.0",method = {RequestMethod.GET})
     @Override
     public AlphaResponse<Boolean> activateUser(ActivateUserRequest request) {
         return null;

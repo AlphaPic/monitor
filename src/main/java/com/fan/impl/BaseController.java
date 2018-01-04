@@ -4,6 +4,7 @@ import com.fan.consts.AuthEnum;
 import com.fan.consts.InitConfig;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
 import com.fan.framework.annotation.*;
+import com.fan.framework.config.MailConfig;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -14,14 +15,19 @@ import org.apache.zookeeper.ZooKeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import redis.clients.jedis.JedisPoolConfig;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,13 +50,22 @@ public class BaseController {
     private SqlSession sqlSession;
 
     @Autowired
-    private ZooKeeper zk;
+    private JavaMailSenderImpl sender;
 
     @Autowired
-    private KafkaProducer<String,String> producer;
+    private MimeMessage message;
 
     @Autowired
-    private KafkaConsumer<String,String> consumer;
+    private MimeMessageHelper helper;
+
+//    @Autowired
+//    private ZooKeeper zk;
+//
+//    @Autowired
+//    private KafkaProducer<String,String> producer;
+//
+//    @Autowired
+//    private KafkaConsumer<String,String> consumer;
 
     @RequestMapping(value = "home",method = RequestMethod.GET)
     public String home(){
@@ -64,8 +79,8 @@ public class BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/api.base.test/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
-    @Auth(AuthEnum.FORCE)
-    public Map<String,Object> json(@RequestParam(value = "name" ,defaultValue = "user")String name){
+    @Auth(AuthEnum.UNCESSARY)
+    public Map<String,Object> json(@RequestParam(value = "name" ,defaultValue = "user")String name) throws MessagingException {
         Map<String,Object> map = null;
         try {
             String tempName = new String(name);
@@ -99,6 +114,11 @@ public class BaseController {
 //        }
 //        logger.info("----------------");
 
+        helper.setFrom(InitConfig.MAIL_QQ_SMTP_USERNAME);
+        helper.setTo("m13168793059@163.com");
+        helper.setText("hello");
+
+        sender.send(message);
         return map;
     }
 }

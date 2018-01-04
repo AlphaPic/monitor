@@ -26,7 +26,8 @@ public class BasicEnum {
     /** 支持的注册类型 */
     public static enum REGISTRY_TYPE{
         MAIL("mail"),
-        MOBILE("mobile");
+        MOBILE("mobile"),
+        UNKNOWNTYPE("unknown");
 
         private String name;
 
@@ -49,14 +50,17 @@ public class BasicEnum {
          */
         public static REGISTRY_TYPE getRegistryTypeSupport(String type){
             if(StringUtils.isEmpty(type) == true){
-                return null;
+                return REGISTRY_TYPE.UNKNOWNTYPE;
             }
             for(REGISTRY_TYPE registryType : REGISTRY_TYPE.values()){
+                if(registryType == REGISTRY_TYPE.UNKNOWNTYPE){
+                    continue;
+                }
                 if(registryType.getName().equals(type)){
                     return registryType;
                 }
             }
-            return null;
+            return REGISTRY_TYPE.UNKNOWNTYPE;
         }
     }
 

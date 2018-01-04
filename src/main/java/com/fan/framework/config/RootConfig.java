@@ -18,7 +18,8 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Import({RedisConfig.class,
          DataBaseConfig.class,
          ZooKeeperConfig.class,
-         KafkaConfig.class})
+         KafkaConfig.class,
+         MailConfig.class})
 @ComponentScan(basePackageClasses = {MethodReloadAspect.class,MessageQueueStatusImpl.class},
         excludeFilters = {
             @ComponentScan.Filter(type = FilterType.ANNOTATION,value = EnableWebMvc.class)

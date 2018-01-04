@@ -21,7 +21,7 @@ public interface IUserRegistryService {
      * @param request
      * @return
      */
-    public AlphaResponse<Boolean> getRegistryCode(RegistryMediaRequest request);
+    public AlphaResponse<RegistryMediaResponse> getRegistryCode(RegistryMediaRequest request);
 
     /**
      * 校验注册时验证码的正确性

@@ -17,6 +17,12 @@ public class RandomUtils {
 
     private static Random random;
 
+    private static final char[] chars = {'a','b','c','d','e','f','g',
+                                         'h','i','j','k','l','m','n',
+                                         'o','p','q','r','s','t',
+                                         'u','v','w','x','y','z',
+                                         '-'};
+
     static {
         random = new Random(999);
     }
@@ -40,7 +46,31 @@ public class RandomUtils {
         return sb.toString();
     }
 
+    /**
+     * 获取cookie
+     * @return
+     */
+    public static String getAlphaCookie(){
+        StringBuilder sb = new StringBuilder(30);
+        int len = random.nextInt(50);
+        while (len < 47){
+            len = random.nextInt(50);
+        }
+        for(int i = 0;i < len;i++){
+            int val = random.nextInt(77);
+            if(val > 26){
+                sb.append((val - 26) % 10);
+            }else {
+                sb.append(chars[val]);
+            }
+        }
+        return sb.toString();
+    }
+
     public static void main(String[] args){
-        System.out.println(getRandomNumber(4).length());
+        int i = 100;
+        while (i-- > 0) {
+            System.out.println(getAlphaCookie());
+        }
     }
 }

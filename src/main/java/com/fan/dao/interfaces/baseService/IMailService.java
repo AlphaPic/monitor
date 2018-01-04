@@ -25,7 +25,7 @@ public interface IMailService {
      * @param message
      * @return
      */
-    public Integer sendMultiMail(AlphaMessageInfo message);
+    public Boolean sendMultiMail(AlphaMessageInfo message);
 
     /**
      * 判断邮箱是不是存在

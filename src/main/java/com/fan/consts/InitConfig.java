@@ -27,7 +27,9 @@ public interface InitConfig {
     String SignatureInterceptorPattern = "/*";
 
     /** 正则匹配 */
-    String ip4Pattern = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}";//是否是正确的ip
+    String ip4Pattern       = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}";//是否是正确的ip
+    String mobilePattern    = "1[1-9]d{10}";                                                                                               //判断是不是正确的手机号
+    String emailPattern     = "";   //判断是不是邮箱
 
     /** redis的相关配置 */
     Long userSurviveTime = 1800L;             //用户cookie的存活时间
