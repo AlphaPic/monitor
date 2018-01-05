@@ -23,6 +23,10 @@ public class RandomUtils {
                                          'u','v','w','x','y','z',
                                          '-'};
 
+    private static final char[] hexChars = {'0','1','2','3',
+                                            '4','5','6','7',
+                                            '8','9','a','b',
+                                            'c','d','e','f'};
     static {
         random = new Random(999);
     }
@@ -42,6 +46,22 @@ public class RandomUtils {
         StringBuilder sb = new StringBuilder(100);
         while (num-- > 0){
             sb.append(random.nextInt(10));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取随机的16进制号码
+     * @param num
+     * @return
+     */
+    public static String getRandomHexNumber(int num){
+        if(num < 0){
+            return null;
+        }
+        StringBuilder sb = new StringBuilder(100);
+        while (num-- > 0){
+            sb.append(hexChars[random.nextInt(16)]);
         }
         return sb.toString();
     }
@@ -70,7 +90,7 @@ public class RandomUtils {
     public static void main(String[] args){
         int i = 100;
         while (i-- > 0) {
-            System.out.println(getAlphaCookie());
+            System.out.println(getRandomHexNumber(30));
         }
     }
 }

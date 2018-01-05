@@ -2,6 +2,7 @@ package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
 
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 /**
@@ -18,14 +19,19 @@ public class RegistryRequest extends AlphaRequest{
     /**
      * 性别
      */
+    @NotNull(message = "性别不能为空")
     private String sex;
+
     /**
      * 年龄
      */
+    @NotNull(message = "年龄不能为空")
     private Integer age;
+
     /**
      * 出生年月
      */
+    @NotNull(message = "出生年月不能为空")
     private String born;
 
     /** 地址信息，选传 */

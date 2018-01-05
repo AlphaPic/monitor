@@ -7,12 +7,14 @@ import com.fan.dao.interfaces.baseService.IMailService;
 import com.fan.dao.interfaces.user.IUserRegistryService;
 import com.fan.dao.model.AlphaResponse;
 import com.fan.dao.model.basicService.AlphaMessageInfo;
+import com.fan.dao.model.basicService.User;
 import com.fan.dao.model.request.ActivateUserRequest;
 import com.fan.dao.model.request.RegistryCodeRequest;
 import com.fan.dao.model.request.RegistryMediaRequest;
 import com.fan.dao.model.request.RegistryRequest;
 import com.fan.dao.model.response.RegistryMediaResponse;
 import com.fan.framework.annotation.MonitorController;
+import com.fan.impl.baseService.UserDBServiceImpl;
 import com.fan.utils.RandomUtils;
 import org.omg.CORBA.TIMEOUT;
 import org.slf4j.Logger;
@@ -44,6 +46,9 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private UserDBServiceImpl userDBService;
 
     /**
      * 获取验证码
@@ -202,7 +207,8 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 return response;
             }
             /** 校验用户的入参，入参使用spring本身的特性进行校验，这里只校验可选入参,注册时的参数分为必输参数和可选参数 */
-            if(verifyRegistryInfo(request) == false){
+            Integer paramVal = verifyRegistryInfo(request);
+            if(paramVal == -1){
                 response.setDate(false);
                 response.setCode("-2");
                 response.setMessage("非必须参数必须全部为空或者全部有值");
@@ -220,16 +226,43 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 return AlphaResponse.error("-1","邮箱有错，请重新获取验证码");
             }
 
+            /** paramVal为1时，只需要将必传参数的写入数据库，但是paramVal为2时，则将必传参数和可选参数的写入放到一个事务之中 */
+            User user = setUserInfo(request);
+            switch (paramVal){
+                case 1:
+                    if(userDBService.insertUserNessaryInfo(user) == false){
+                        logger.error("插入用户必要信息失败");
+                        return AlphaResponse.error("-1","插入用户信息失败,请重试");
+                    }
+                    break;
+                case 2:
+                    if(userDBService.insertUserAllInfo(user) == false){
+                        logger.error("插入用户所有信息失败");
+                        return AlphaResponse.error("-1","插入用户信息失败，请重试");
+                    }
+                    break;
+                default:
+                    return AlphaResponse.error("-1","参数不对");
+            }
+            /** 传输成功，则发出一个注册成功的消息到消息队列,消息队列暂时不做复杂的处理 */
         }catch (Exception e){
             logger.error("redis读取出现异常",e.getMessage());
             return AlphaResponse.error("-1","抱歉，系统内部出现异常，请稍后再试");
         }
 
-        /** 必输参数必传，没有则报错 */
-        /** 根据注册方式选择是否激活用户，email用户不激活，其它情况激活用户 */
-        /** 可选参数假如传入了，则在写入数据库中的时候必须与必输参数写在同一个事务之中 */
-        /** 传输成功，则发出一个注册成功的消息到消息队列,消息队列暂时不做复杂的处理 */
         return response;
+    }
+
+    /**
+     * 根据注册请求的参数设置用户信息
+     * @param request
+     * @return
+     */
+    private User setUserInfo(RegistryRequest request){
+        /** 根据注册方式选择是否激活用户，email用户不激活，其它情况激活用户 */
+        User user = new User();
+        user.setUserName(request.getEmail());
+        return user;
     }
 
     /**
@@ -254,22 +287,32 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
      * @param request
      * @return
      */
-    private Boolean verifyRegistryInfo(RegistryRequest request){
+    private Integer verifyRegistryInfo(RegistryRequest request){
         String country     = request.getCountry();
         String province    = request.getProvince();
         String city        = request.getCity();
         String street      = request.getStreet();
         String collage     = request.getCollage();
         String company     = request.getCompany();
-        if(StringUtils.isEmpty(country) ||
-                StringUtils.isEmpty(province) ||
-                StringUtils.isEmpty(city) ||
-                StringUtils.isEmpty(street) ||
-                StringUtils.isEmpty(collage) ||
+        /** 全部为空 */
+        if(StringUtils.isEmpty(country) &&
+                StringUtils.isEmpty(province) &&
+                StringUtils.isEmpty(city) &&
+                StringUtils.isEmpty(street) &&
+                StringUtils.isEmpty(collage) &&
                 StringUtils.isEmpty(company)){
-            return false;
+            return 1;
         }
-        return true;
+        /** 全部有值 */
+        if(StringUtils.isEmpty(country) == false &&
+                StringUtils.isEmpty(province) == false &&
+                StringUtils.isEmpty(city) == false &&
+                StringUtils.isEmpty(street) == false &&
+                StringUtils.isEmpty(collage) == false &&
+                StringUtils.isEmpty(company) == false){
+            return 2;
+        }
+        return -1;
     }
 
     /**

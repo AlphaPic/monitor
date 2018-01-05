@@ -17,41 +17,78 @@ public class User implements Serializable{
     /**
      * 用户id
      */
-    private Long userId;
+    private Integer userId;
+
     /**
      * 用户名称
      */
     private String userName;
+
+    /**
+     * 用户编号
+     */
+    private String userNo;
+
+    /**
+     * 年龄
+     */
+    private Integer age;
+
+    /**
+     * 性别
+     */
+    private String sex;
+
+    /**
+     * 出生年月
+     */
+    private Date born;
+
+    /**
+     * 地址信息
+     */
+    private Address address;
+
+    /**
+     * 大学
+     */
+    private String collage;
+
+    /**
+     * 公司
+     */
+    private String company;
+
     /**
      * 用户创建时间
      */
     private Date createTime;
-    /**
-     * 上次登录时间
-     */
-    private Date lastLoginTime;
+
     /**
      * 手机
      */
     private String mobile;
+
     /**
      * 邮箱
      */
     private String email;
-    /**
-     * 权限
-     */
-    private String permit;
-    /**
-     * 状态
-     */
-    private String status;
 
-    public Long getUserId() {
+    /**
+     * 用户的特长和爱好
+     */
+    private String hobby;
+
+    /**
+     * 是否激活
+     */
+    private Boolean isActive;
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -63,20 +100,68 @@ public class User implements Serializable{
         this.userName = userName;
     }
 
+    public String getUserNo() {
+        return userNo;
+    }
+
+    public void setUserNo(String userNo) {
+        this.userNo = userNo;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public Date getBorn() {
+        return born;
+    }
+
+    public void setBorn(Date born) {
+        this.born = born;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getCollage() {
+        return collage;
+    }
+
+    public void setCollage(String collage) {
+        this.collage = collage;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-    }
-
-    public Date getLastLoginTime() {
-        return lastLoginTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
     }
 
     public String getMobile() {
@@ -95,20 +180,20 @@ public class User implements Serializable{
         this.email = email;
     }
 
-    public String getPermit() {
-        return permit;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setPermit(String permit) {
-        this.permit = permit;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
-    public String getStatus() {
-        return status;
+    public String getHobby() {
+        return hobby;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setHobby(String hobby) {
+        this.hobby = hobby;
     }
 
     @Override
@@ -118,18 +203,30 @@ public class User implements Serializable{
                 .append(userId);
         sb.append(",\"userName\":\"")
                 .append(userName).append('\"');
+        sb.append(",\"userNo\":\"")
+                .append(userNo).append('\"');
+        sb.append(",\"age\":")
+                .append(age);
+        sb.append(",\"sex\":\"")
+                .append(sex).append('\"');
+        sb.append(",\"born\":\"")
+                .append(born).append('\"');
+        sb.append(",\"address\":")
+                .append(address);
+        sb.append(",\"collage\":\"")
+                .append(collage).append('\"');
+        sb.append(",\"company\":\"")
+                .append(company).append('\"');
         sb.append(",\"createTime\":\"")
                 .append(createTime).append('\"');
-        sb.append(",\"lastLoginTime\":\"")
-                .append(lastLoginTime).append('\"');
         sb.append(",\"mobile\":\"")
                 .append(mobile).append('\"');
         sb.append(",\"email\":\"")
                 .append(email).append('\"');
-        sb.append(",\"permit\":\"")
-                .append(permit).append('\"');
-        sb.append(",\"status\":\"")
-                .append(status).append('\"');
+        sb.append(",\"hobby\":\"")
+                .append(hobby).append('\"');
+        sb.append(",\"isActive\":")
+                .append(isActive);
         sb.append('}');
         return sb.toString();
     }

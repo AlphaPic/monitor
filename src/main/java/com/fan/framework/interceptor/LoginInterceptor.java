@@ -59,7 +59,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
         /** 这一步骤实现上述的1,2两步 */
-        Long userId = getUserIdFromCache(request);
+        Integer userId = getUserIdFromCache(request);
         if(userId == -1){
             logger.error("获取用户id失败");
             return false;
@@ -69,20 +69,20 @@ public class LoginInterceptor implements HandlerInterceptor {
             logger.error("没有获取到用户的数据");
             return false;
         }
-        if("FROZEN".equalsIgnoreCase(user.getStatus())){
-            logger.error("当前用户已冻结" + user);
-            return false;
-        }
+//        if("FROZEN".equalsIgnoreCase(user.getStatus())){
+//            logger.error("当前用户已冻结" + user);
+//            return false;
+//        }
         /** 设置request的值 */
         request.setAttribute("name",user.getUserName());
         request.setAttribute("mobile",user.getMobile());
         request.setAttribute("email",user.getEmail());
-        request.setAttribute("permit",user.getPermit());
+//        request.setAttribute("permit",user.getPermit());
         return true;
     }
 
     /** 通过cookie从缓存中获取用户的相关数据 */
-    private Long getUserIdFromCache(HttpServletRequest request){
+    private Integer getUserIdFromCache(HttpServletRequest request){
         String cookieValue = null;
         String cookieName = "monitorCookie";
         /** 获取cookie的值 */
@@ -103,17 +103,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         if(StringUtils.isEmpty(cookieValue)){
             logger.error("没有cookie");
-            return -1L;
+            return -1;
         }
         /** 利用cookie来找到userId */
         String redisKey = InitConfig.COOKIE_ID + cookieValue;
-        Long userId = 0L;
+        Integer userId = 0;
         try{
             String userIdString = redisTemplate.opsForValue().get(redisKey);
-            userId = Long.parseLong(userIdString);
+            userId = Integer.parseInt(userIdString);
             if(userId <= 0){
                 redisTemplate.delete(redisKey);
-                return -1L;
+                return -1;
             }
         }catch (Exception e){
             logger.error("获取userId时发生异常" + redisKey);

@@ -15,5 +15,17 @@ public interface IUserDBService {
      * 获取用户信息
      * @return
      */
-    public User getUser(Long userId);
+    public User getUser(Integer userId);
+
+    /**
+     * 插入用户必传的信息
+     * @return
+     */
+    public Boolean insertUserNessaryInfo(User user);
+
+    /**
+     * 插入用户非必传的信息
+     * @return
+     */
+    public Boolean insertUserAllInfo(User user);
 }

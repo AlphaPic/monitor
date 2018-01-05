@@ -96,7 +96,7 @@ public class BaseController {
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(cf.getConvertPipelineAndTxResults());
-//        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
 //        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
 //        System.out.println(mapper.getUserInfoByUserId(1));
 //        logger.info(String.valueOf(mapper.getUserInfo(1)));
