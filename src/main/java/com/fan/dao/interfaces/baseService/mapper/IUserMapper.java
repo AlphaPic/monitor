@@ -1,6 +1,7 @@
 package com.fan.dao.interfaces.baseService.mapper;
 
 import com.fan.dao.model.basicService.User;
+import com.fan.dao.model.basicService.UserStatus;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
@@ -17,43 +18,48 @@ import java.util.Date;
 public interface IUserMapper {
 
     /** 根据userid查询用户信息 */
-    @Select("SELECT * FROM USER WHERE userid = #{userId}")
-    User getUserInfoByUserId(@Param("userid") Integer userId);
+    @Select("SELECT * FROM USERINFO WHERE userid = #{userid}")
+    User getUserInfoByUserId(@Param("userid") Integer userid);
+
+    /** 根据userNo查找用户信息 */
+    @Select("SELECT * FROM USERINFO WHERE username = #{username}")
+    User getUserInfoByUserName(@Param("username") String username);
 
     /** 根据userNo查询用户信息 */
-    @Select("SELECT * FROM USER WHERE userno = #{userNo}")
-    User getUserInfoByUserUserNo(@Param("userno") Integer userNo);
+    @Select("SELECT * FROM USERINFO WHERE userno = #{userno}")
+    User getUserInfoByUserUserNo(@Param("userno") String userno);
 
     /** 查询userId的最大值 */
-    @Select("SELECT MAX(USERID) FROM USER")
+    @Select("SELECT MAX(USERID) FROM USERINFO")
     Integer getMaxUserId();
 
     /** 插入用户的必传信息 */
-    @Insert("INSERT INTO USER (userid,username,userno,age,sex,born,createtime,isactive) VALUES(#{userId},#{userName},#{userNo},#{age},#{sex},#{born},#{createTime},#{isActive})")
+    @Insert("INSERT INTO USERINFO (userid,username,userno,age,sex,born,createtime,isactive) " +
+            "VALUES (#{userid},#{username},#{userno},#{age},#{sex},#{born},#{createtime},#{isactive})")
     int insertUserNessaryInfo(
-                          @Param("userid")          Integer     userId,
-                          @Param("username")        String      userName,
-                          @Param("userno")          String      userNo,
+                          @Param("userid")          Integer     userid,
+                          @Param("username")        String      username,
+                          @Param("userno")          String      userno,
                           @Param("age")             Integer     age,
                           @Param("sex")             String      sex,
                           @Param("born")            Date        born,
-                          @Param("createtime")      Date        createTime,
-                          @Param("isactive")        Integer     isActive);
+                          @Param("createtime")      Date        createtime,
+                          @Param("isactive")        Integer     isactive);
 
     /** 插入用户的选传信息 */
-    @Update("UPDATE USER SET " +
-            "country    = #{country}" +
-            "province   = #{province}" +
-            "city       = #{city}" +
-            "street     = #{street}" +
-            "collage    = #{collage}" +
-            "company    = #{company}" +
-            "mobile     = #{mobile}" +
-            "email      = #{email}" +
+    @Update("UPDATE USERINFO SET " +
+            "country    = #{country}," +
+            "province   = #{province}," +
+            "city       = #{city}," +
+            "street     = #{street}," +
+            "collage    = #{collage}," +
+            "company    = #{company}," +
+            "mobile     = #{mobile}," +
+            "email      = #{email}," +
             "hobby      = #{hobby}" +
             "WHERE " +
-            "userid = #{userId}")
-    int insertUserUnnessaryInfo(@Param("userid")    Integer     userId,
+            "userid = #{userid}")
+    int insertUserUnnessaryInfo(@Param("userid")    Integer     userid,
                                 @Param("country")   String      country,
                                 @Param("province")  String      province,
                                 @Param("city")      String      city,
@@ -66,12 +72,25 @@ public interface IUserMapper {
 
 
     /** 获取用户的总数 */
-    @Select("SELECT COUNT(*) FROM USER")
+    @Select("SELECT COUNT(*) FROM USERINFO")
     Long getUserCount();
 
     /** 插入用户操作的状态 */
-    @Insert("INSERT INTO USERSTATUS (userid,operationtime,activity) VALUES(#{userId},#{operationTime},#{activity})")
-    int insertUserStatus(@Param("userid")           Integer     userId,
-                         @Param("operationtime")    Date        operationTime,
-                         @Param("activity")         String      activity);
+    @Insert("INSERT INTO USEROPERATION (userid,operationtime,activity) VALUES(#{userid},#{operationtime},#{activity})")
+    int insertUserOperation(@Param("userid")           Integer     userid,
+                            @Param("operationtime")    Date        operationtime,
+                            @Param("activity")         String      activity);
+
+    /** 生成用户激活码 */
+    @Insert("INSERT INTO USERSTATUS(userid,activecode,registrychannel) VALUES(#{userid},#{activecode},#{registrychannel})")
+    int insertUserActiveCode(@Param("userid")          Integer     userid,
+                             @Param("activecode")      String      activecode,
+                             @Param("registrychannel") String      registrychannel);
+
+    /** 获取用户的状态 */
+    @Select("SELECT * FROM USERSTATUS WHERE USERID = #{userid}")
+    UserStatus getUserStatus(@Param("userid") Integer userid);
+
+    @Update("UPDATE USERINFO SET isactive = 1 WHERE userid = #{userid}")
+    int activeUser(@Param("userid") Integer userid);
 }

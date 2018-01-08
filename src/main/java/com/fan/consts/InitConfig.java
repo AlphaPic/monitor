@@ -27,10 +27,11 @@ public interface InitConfig {
     String SignatureInterceptorPattern = "/*";
 
     /** 正则匹配 */
-    String ip4Pattern       = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}";//是否是正确的ip
-    String mobilePattern    = "1[1-9]d{10}";                                                                                               //判断是不是正确的手机号
-    String emailPattern     = "";   //判断是不是邮箱
+    String ip4Pattern       = "([1-9]|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])(\\\\.(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])){3}"; //是否是正确的ip
+    String mobilePattern    = "1[0-9]{10}";                                                                                                 //手机号正则表达式
+    String emailPattern     = "([0-9]{8,12}@qq).com|([a-z0-9]{6,20}@(163|gmail)).com";                                                      //邮箱正则表达式
 
+    //@[qq|163|gmail]\.com
     /** redis的相关配置 */
     Long userSurviveTime = 1800L;             //用户cookie的存活时间
 
@@ -68,9 +69,9 @@ public interface InitConfig {
     /** 数据库相关配置 */
     /** Mysql */
     String MYSQL_DRIVER        = "com.mysql.jdbc.Driver";                  /** mysql驱动名称 */
-    String MYSQL_URL           = "jdbc:mysql://127.0.0.1:3306/monitor";    /** mysql驱动url */
+    String MYSQL_URL           = "jdbc:mysql://10.115.1.223:3306/monitor"; /** mysql驱动url */
     String MYSQL_USERNAME      = "root";                                   /** mysql用户名 */
-    String MYSQL_PASSWORD      = "xiwang";                             /** mysql密码 */
+    String MYSQL_PASSWORD      = "xiwang";                                 /** mysql密码 */
 
     String MYSQL_ENVIRONMENT   = "mysqlEnvironment";                       /** mysql的环境名称 */
 

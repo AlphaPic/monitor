@@ -3,8 +3,10 @@ package com.fan.impl;
 import com.fan.consts.AuthEnum;
 import com.fan.consts.InitConfig;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
+import com.fan.dao.model.basicService.User;
 import com.fan.framework.annotation.*;
 import com.fan.framework.config.MailConfig;
+import com.fan.impl.baseService.UserDBServiceImpl;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -28,6 +30,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -45,6 +48,9 @@ public class BaseController {
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    private UserDBServiceImpl userDBService;
 
     @Autowired
     private SqlSession sqlSession;
@@ -97,8 +103,15 @@ public class BaseController {
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(cf.getConvertPipelineAndTxResults());
         IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
-//        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
-//        System.out.println(mapper.getUserInfoByUserId(1));
+        User user = new User();
+        user.setUserId(1004);
+        user.setUserNo("1090908938900");
+        user.setUserName("hello");
+        user.setSex("male");
+        user.setAge(12);
+        user.setBorn(new Date(System.currentTimeMillis()));
+        userDBService.insertUserNessaryInfo(user);
+        System.out.println(mapper.getUserInfoByUserId(1004));
 //        logger.info(String.valueOf(mapper.getUserInfo(1)));
 //        logger.info(String.valueOf(zk.getState().isAlive()));
 //        logger.info("----------------");
@@ -114,11 +127,11 @@ public class BaseController {
 //        }
 //        logger.info("----------------");
 
-        helper.setFrom(InitConfig.MAIL_QQ_SMTP_USERNAME);
-        helper.setTo("m13168793059@163.com");
-        helper.setText("hello");
-
-        sender.send(message);
+//        helper.setFrom(InitConfig.MAIL_QQ_SMTP_USERNAME);
+//        helper.setTo("m13168793059@163.com");
+//        helper.setText("hello");
+//
+//        sender.send(message);
         return map;
     }
 }

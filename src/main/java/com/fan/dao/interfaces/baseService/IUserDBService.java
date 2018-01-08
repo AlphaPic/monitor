@@ -13,9 +13,17 @@ import com.fan.dao.model.basicService.User;
 public interface IUserDBService {
     /**
      * 获取用户信息
+     * @param userId
      * @return
      */
-    public User getUser(Integer userId);
+    public User getUserByUserId(Integer userId);
+
+    /**
+     * 通过名称获取用户
+     * @param userName
+     * @return
+     */
+    public User getUserByUserName(String userName);
 
     /**
      * 插入用户必传的信息

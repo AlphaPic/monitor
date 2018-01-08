@@ -79,7 +79,7 @@ public class RegistryRequest extends AlphaRequest{
     private String alphaCookie;
 
     /** 技术特长，选传 */
-    private String[] hobby;
+    private String hobby;
 
     public String getAlphaCookie() {
         return alphaCookie;
@@ -177,11 +177,11 @@ public class RegistryRequest extends AlphaRequest{
         this.email = email;
     }
 
-    public String[] getHobby() {
+    public String getHobby() {
         return hobby;
     }
 
-    public void setHobby(String[] hobby) {
+    public void setHobby(String hobby) {
         this.hobby = hobby;
     }
 
@@ -212,8 +212,8 @@ public class RegistryRequest extends AlphaRequest{
                 .append(email).append('\"');
         sb.append(",\"alphaCookie\":\"")
                 .append(alphaCookie).append('\"');
-        sb.append(",\"hobby\":")
-                .append(Arrays.toString(hobby));
+        sb.append(",\"hobby\":\"")
+                .append(hobby).append('\"');
         sb.append('}');
         return sb.toString();
     }

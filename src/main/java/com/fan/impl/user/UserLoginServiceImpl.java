@@ -166,7 +166,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
             logger.error("用户的登录cookie不能为空");
             return AlphaResponse.error("-1","用户的登录cookie不能为空");
         }
-        Object user = DBUtils.getUserInfo(request.getUserId());
+        Object user = null;//DBUtils.getUserInfo(request.getUserId());
         if(user == null){
             logger.error("用户不存在");
             return AlphaResponse.error("-1","用户不存在");

@@ -40,10 +40,6 @@ public class AlphaRequest implements Serializable{
     @NotNull(message = "登录通道不能为空")
     private String loginChannel;
     /**
-     * 用户id
-     */
-    private Long userId;
-    /**
      * 请求信息
      */
     private HttpServletRequest httpRequest;
@@ -52,13 +48,6 @@ public class AlphaRequest implements Serializable{
      */
     private HttpServletResponse httpResponse;
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getMethod() {
         return method;
@@ -129,8 +118,6 @@ public class AlphaRequest implements Serializable{
                 .append(ip).append('\"');
         sb.append(",\"loginChannel\":\"")
                 .append(loginChannel).append('\"');
-        sb.append(",\"userId\":")
-                .append(userId);
         sb.append(",\"httpRequest\":")
                 .append(httpRequest);
         sb.append(",\"httpResponse\":")

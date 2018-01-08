@@ -1,14 +1,13 @@
 package com.fan.dao.model.basicService;
 
 import java.io.Serializable;
-import java.sql.Date;
 
 /**
  * @author:fanwenlong
- * @date:2018-01-05 15:08:32
+ * @date:2018-01-08 10:35:42
  * @E-mail:alpha18603074401@gmail.com
  * @mobile:186-0307-4401
- * @description:用户状态信息
+ * @description:用户状态
  * @detail:
  */
 public class UserStatus implements Serializable{
@@ -17,40 +16,49 @@ public class UserStatus implements Serializable{
     /**
      * 用户id
      */
-    private Long userId;
+    private Integer userId;
 
     /**
-     * 创建时间
+     * 激活码
      */
-    private Date operateTime;
+    private String activeCode;
 
     /**
-     * 活动时间
+     * 注册渠道
      */
-    private String activity;
+    private String registryChannel;
 
-    public Long getUserId() {
+    public UserStatus() {
+    }
+
+    public UserStatus(Integer userId, String activeCode, String registryChannel) {
+        this.userId = userId;
+        this.activeCode = activeCode;
+        this.registryChannel = registryChannel;
+    }
+
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public Date getOperateTime() {
-        return operateTime;
+    public String getActiveCode() {
+        return activeCode;
     }
 
-    public void setOperateTime(Date operateTime) {
-        this.operateTime = operateTime;
+    public void setActiveCode(String activeCode) {
+        this.activeCode = activeCode;
     }
 
-    public String getActivity() {
-        return activity;
+    public String getRegistryChannel() {
+        return registryChannel;
     }
 
-    public void setActivity(String activity) {
-        this.activity = activity;
+    public void setRegistryChannel(String registryChannel) {
+        this.registryChannel = registryChannel;
     }
 
     @Override
@@ -58,10 +66,10 @@ public class UserStatus implements Serializable{
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"userId\":")
                 .append(userId);
-        sb.append(",\"operateTime\":\"")
-                .append(operateTime).append('\"');
-        sb.append(",\"activity\":\"")
-                .append(activity).append('\"');
+        sb.append(",\"activeCode\":\"")
+                .append(activeCode).append('\"');
+        sb.append(",\"registryChannel\":\"")
+                .append(registryChannel).append('\"');
         sb.append('}');
         return sb.toString();
     }

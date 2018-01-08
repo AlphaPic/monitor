@@ -6,8 +6,10 @@ import com.fan.consts.UserConfig;
 import com.fan.dao.interfaces.baseService.IMailService;
 import com.fan.dao.interfaces.user.IUserRegistryService;
 import com.fan.dao.model.AlphaResponse;
+import com.fan.dao.model.basicService.Address;
 import com.fan.dao.model.basicService.AlphaMessageInfo;
 import com.fan.dao.model.basicService.User;
+import com.fan.dao.model.basicService.UserStatus;
 import com.fan.dao.model.request.ActivateUserRequest;
 import com.fan.dao.model.request.RegistryCodeRequest;
 import com.fan.dao.model.request.RegistryMediaRequest;
@@ -16,6 +18,8 @@ import com.fan.dao.model.response.RegistryMediaResponse;
 import com.fan.framework.annotation.MonitorController;
 import com.fan.impl.baseService.UserDBServiceImpl;
 import com.fan.utils.RandomUtils;
+import com.fan.utils.RegexUtils;
+import org.apache.kafka.common.protocol.types.Field;
 import org.omg.CORBA.TIMEOUT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -98,7 +105,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 String authCode = RandomUtils.getRandomNumber(8);
                 messageInfo.setText(authCode);
                 try {
-                    mailService.sendASingleMail(messageInfo);
+//                    mailService.sendASingleMail(messageInfo);
                 }catch (Exception e){
                     logger.error("发送邮件失败" + e.getMessage());
                     return AlphaResponse.error("-1","发送邮件失败，请稍后再试");
@@ -110,7 +117,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 String authCodeSurviveInfo = UserConfig.REDIS_REGISTRY_EMAIL_ACCOUNT_AUTHCODE + alphaCookie;
                 try{
                     redisTemplate.opsForValue().set(authCodeSurviveInfo,authCode,UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT, TimeUnit.SECONDS);   /** 验证码过期时间 */
-                    redisTemplate.opsForValue().set(emailLockKey,"true",UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT, TimeUnit.SECONDS);           /** email锁住的时间 */
+                    redisTemplate.opsForValue().set(emailLockKey,"true",UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT, TimeUnit.SECONDS);            /** email锁住的时间 */
                     /** cookie和邮箱之间必须建立联系，这样就可以在注册的时候直接拿到email的值 */
                     String cookieAccount = UserConfig.REDIS_REGISTRY_ACCOUNT_BIND_COOKIE + alphaCookie;
                     redisTemplate.opsForValue().set(cookieAccount,email,UserConfig.REDIS_REGISTRY_EMAIL_AUTH_TIMEOUT,TimeUnit.SECONDS);
@@ -158,9 +165,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 response.setErrorMessage("验证码已过期");
                 return response;
             }
-            int index = cookieValue.lastIndexOf('_');
-            String authTemp = cookieValue.substring(index + 1);
-            if(authTemp != null && authTemp.equals(authCode) == false){
+            if(cookieValue == null || cookieValue.equals(authCode) == false){
                 response.setDate(false);
                 response.setErrorMessage("验证码错误");
                 response.setCode("-2");
@@ -199,7 +204,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
         String registryPermitKey = UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT + alphaCookie;
         try{
             String registryPermitValue = redisTemplate.opsForValue().get(registryPermitKey);
-            if(StringUtils.isEmpty(registryPermitKey) || "true".equals(registryPermitKey) != true){
+            if(StringUtils.isEmpty(registryPermitKey) || "true".equals(registryPermitValue) != true){
                 logger.error("用户注册的窗口时间已经过了，请重新获取验证码");
                 response.setDate(false);
                 response.setCode("-1");
@@ -215,14 +220,16 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 return response;
             }
             /** 通过缓存获取注册渠道 */
-            BasicEnum.REGISTRY_TYPE type = getRegistryChannel(registryPermitValue);
+            String cookieAccount = UserConfig.REDIS_REGISTRY_ACCOUNT_BIND_COOKIE + request.getAlphaCookie();
+            String cookieAccountValue = redisTemplate.opsForValue().get(cookieAccount);
+            BasicEnum.REGISTRY_TYPE type = getRegistryChannel(cookieAccountValue);
             if(type == BasicEnum.REGISTRY_TYPE.UNKNOWNTYPE || type == BasicEnum.REGISTRY_TYPE.MOBILE){
                 logger.error("暂时不支持的注册类型");
                 return AlphaResponse.error("-1","目前只支持邮箱注册");
             }
             String email = request.getEmail();
-            if(email.equals(registryPermitValue) == false){
-                logger.error("邮箱有错" + registryPermitValue);
+            if(email.equals(cookieAccountValue) == false){
+                logger.error("邮箱有错" + cookieAccountValue);
                 return AlphaResponse.error("-1","邮箱有错，请重新获取验证码");
             }
 
@@ -245,10 +252,13 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                     return AlphaResponse.error("-1","参数不对");
             }
             /** 传输成功，则发出一个注册成功的消息到消息队列,消息队列暂时不做复杂的处理 */
+            sendARegistryMessage(user);
         }catch (Exception e){
             logger.error("redis读取出现异常",e.getMessage());
             return AlphaResponse.error("-1","抱歉，系统内部出现异常，请稍后再试");
         }
+        response.setMessage("注册成功");
+        response.setDate(true);
 
         return response;
     }
@@ -261,8 +271,76 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
     private User setUserInfo(RegistryRequest request){
         /** 根据注册方式选择是否激活用户，email用户不激活，其它情况激活用户 */
         User user = new User();
+        /** ******************************注册必要信息********************************** */
         user.setUserName(request.getEmail());
+        user.setAge(request.getAge());
+        user.setBorn(Date.valueOf(request.getBorn()));
+        user.setSex(request.getSex());
+        /** *******************************注册非必要信息******************************* */
+        user.setCollage(request.getCollage());
+        user.setMobile(request.getMobile());
+        user.setCompany(request.getCompany());
+        user.setHobby(request.getHobby());
+//        if(hobies != null && hobies.length > 0){
+//            String hobieString = "";
+//            for(String hobie : hobies){
+//                hobieString += hobie + ",";
+//            }
+//            if(hobieString.endsWith(",")){
+//                hobieString = hobieString.substring(0,hobieString.lastIndexOf(','));
+//            }
+//
+//        }
+        /** 设置地址信息 */
+        Address address = new Address();
+        address.setCity(request.getCity());
+        address.setCountry(request.getCountry());
+        address.setProvince(request.getProvince());
+        address.setStreet(request.getStreet());
+        user.setAddress(address);
         return user;
+    }
+
+    /**
+     * 发送一个注册成功的消息
+     * 注:对邮件注册的要进行激活操作，这个方式是通过调用发送给用户的链接的方式进行激活
+     * @param user
+     */
+    private void sendARegistryMessage(User user){
+        /** 判断是不是邮箱注册，邮箱注册需要发送激活邮件 */
+        String userName = user.getUserName();
+        if(RegexUtils.isEmail(userName)){
+            String activeCode         = RandomUtils.getRandomHexNumber(40);
+            Integer userId            = user.getUserId();
+            String registryChannel    = "email";
+            /** 在用户id为空的情况下通过用户名获取用户id */
+            if(userId == null) {
+                User insertedUser = userDBService.getUserByUserName(userName);
+                if (insertedUser == null) {
+                    logger.error("用户为空，无法激活" + userName);
+                    return;
+                }
+                userId = insertedUser.getUserId();
+            }
+            UserStatus status = new UserStatus(userId,activeCode,registryChannel);
+            try {
+                if(userDBService.insertActiveCode(status) == false){
+                    logger.error("保存激活码信息失败");
+                    return;
+                }
+                AlphaMessageInfo messageInfo = new AlphaMessageInfo();
+                messageInfo.setSingleDest(userName);
+                messageInfo.setText(activeCode);
+                messageInfo.setFrom(InitConfig.MAIL_QQ_SMTP_USERNAME);
+                mailService.sendASingleMail(messageInfo);
+            }catch (Exception e){
+                logger.error("发送激活邮件出现异常" + e.getMessage());
+                return;
+            }
+        }
+
+        /** 推送一个消息 */
+
     }
 
     /**
@@ -324,6 +402,36 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
     @RequestMapping(value = "/api.user.registry.activateUser/1.0.0",method = {RequestMethod.GET})
     @Override
     public AlphaResponse<Boolean> activateUser(ActivateUserRequest request) {
-        return null;
+        try {
+            String alphaCookie = request.getAlphaCookie();
+            String cookieKey = UserConfig.REDIS_REGISTRY_ACCOUNT_BIND_COOKIE + alphaCookie;
+            String cookieVal = redisTemplate.opsForValue().get(cookieKey);
+            if(StringUtils.isEmpty(cookieVal)){
+                logger.error("cookie的值为空");
+                return AlphaResponse.error("-1","cookie已经过期");
+            }
+            User user = userDBService.getUserByUserName(cookieVal);
+            if (user == null) {
+                logger.error("用户不存在" + cookieVal);
+                return AlphaResponse.error("-1","用户不存在");
+            }
+            Boolean isActive = user.getActive();
+            if(isActive == true){
+                logger.info("用户已经被激活" + user.getUserId());
+                return AlphaResponse.error("-1","您已经被激活,不必重新激活");
+            }
+            UserStatus status = new UserStatus();
+            status.setUserId(user.getUserId());
+            status.setActiveCode(request.getActiveCode());
+            status.setRegistryChannel(request.getRegistryChannel());
+            if(userDBService.activeUser(status) == false){
+                logger.error("激活失败" + status);
+                return AlphaResponse.error("-1","激活失败,请重试或者重新发送激活邮件");
+            }
+        }catch (Exception e){
+            logger.error("激活用户时出现异常" + e.getMessage());
+            return AlphaResponse.error("-1","激活用户时出现异常，请稍后再试");
+        }
+        return AlphaResponse.success(true,"恭喜你,激活成功");
     }
 }

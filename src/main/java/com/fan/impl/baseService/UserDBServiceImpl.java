@@ -2,8 +2,12 @@ package com.fan.impl.baseService;
 
 import com.fan.dao.interfaces.baseService.IUserDBService;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
+import com.fan.dao.model.basicService.Address;
 import com.fan.dao.model.basicService.User;
+import com.fan.dao.model.basicService.UserBehavior;
+import com.fan.dao.model.basicService.UserStatus;
 import com.fan.utils.RandomUtils;
+import com.fan.utils.RegexUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +38,36 @@ public class UserDBServiceImpl implements IUserDBService{
      * @return
      */
     @Override
-    public User getUser(Integer userId) {
+    public User getUserByUserId(Integer userId) {
         IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
         User user = null;
         try{
             user = mapper.getUserInfoByUserId(userId);
+            if(user == null){
+                logger.error("用户不存在");
+            }
+        }catch (Exception e){
+            logger.error("获取用户信息出现异常");
+            return null;
+        }
+        return user;
+    }
+
+    /**
+     * 通过用户名称获取用户,用户名称也是唯一的
+     * @param userName
+     * @return
+     */
+    @Override
+    public User getUserByUserName(String userName) {
+        if(com.fan.utils.StringUtils.isEmptyExists(userName)){
+            logger.error("用户名称不能为空");
+            return null;
+        }
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        User user = null;
+        try{
+            user = mapper.getUserInfoByUserName(userName);
             if(user == null){
                 logger.error("用户不存在");
             }
@@ -104,8 +133,10 @@ public class UserDBServiceImpl implements IUserDBService{
             int res = mapper.insertUserNessaryInfo(userId,userName,userNo,age,sex,born,createTime,isActive == false ? 0 : 1);
             if(res <= 0){
                 logger.error("插入必输信息失败");
+                sqlSession.rollback();
                 return false;
             }
+            sqlSession.commit();
         }catch (Exception e){
             logger.error("插入用户信息出现异常");
             return false;
@@ -120,8 +151,23 @@ public class UserDBServiceImpl implements IUserDBService{
      */
     public String getUserNumber(){
         String userNo = RandomUtils.getRandomHexNumber(30);
-        if(userNo == null)
-        return null;
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        if(userNo == null){
+            return null;
+        }
+
+        try{
+            /** 只有用户号不存在才能返回新用户号，否则返回空 */
+            User user = mapper.getUserInfoByUserUserNo(userNo);
+            if(user != null){
+                logger.error("用户号已存在");
+                return null;
+            }
+        }catch (Exception e){
+            logger.error("获取用户的编号失败");
+            return null;
+        }
+        return userNo;
     }
 
     /**
@@ -146,6 +192,7 @@ public class UserDBServiceImpl implements IUserDBService{
         return maxId;
     }
 
+
     /**
      * 插入用户的非必传信息
      * @param user
@@ -153,6 +200,139 @@ public class UserDBServiceImpl implements IUserDBService{
      */
     @Override
     public Boolean insertUserAllInfo(User user) {
-        return null;
+        if(insertUserNessaryInfo(user) == false){
+            logger.error("插入必要信息失败");
+            return false;
+        }
+        /** 走到这一步就一定要返回true，因为必要的信息已经插入成功了 */
+
+
+        /** 根据用户的名称获取用户 */
+        String userName = user.getUserName();
+        Integer userId  = user.getUserId();
+        if(userId == null){
+            if(StringUtils.isEmpty(userName)) {
+                logger.error("插入非必要信息的时候，userId和userName不能同时为空");
+                return true;
+            }else{
+                User insertedUser = getUserByUserName(userName);
+                if(insertedUser == null){
+                    logger.error("用户名为" + userName + "的用户找不到!!!");
+                    return true;
+                }
+                userId = insertedUser.getUserId();
+            }
+        }
+
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        try{
+
+            Address address     = user.getAddress();
+            if(address == null){
+                logger.error("地址信息不能为空");
+                return true;
+            }
+            String country      = address.getCountry();
+            String province     = address.getProvince();
+            String city         = address.getCity();
+            String street       = address.getStreet();
+            String collage      = user.getCollage();
+            String company      = user.getCompany();
+            String mobile       = null;
+            String email        = null;
+            String hobby        = user.getHobby();
+
+            /** 如果是email，则设置为 */
+            if(RegexUtils.isEmail(user.getUserName())){
+                email  = user.getUserName();
+                mobile = user.getMobile();
+            }else if(RegexUtils.isMobile(user.getMobile())){
+                email  = user.getEmail();
+                mobile = user.getUserName();
+            }
+            if(com.fan.utils.StringUtils.isEmptyExists(country,province,city,street,collage,company,mobile,email,hobby) == true){
+                logger.error("非必要信息存在为空的情况" + user);
+                return true;
+            }
+            int res = mapper.insertUserUnnessaryInfo(userId,country,province,city,street,collage,mobile,company,email,hobby);
+            if(res <= 0){
+                logger.error("插入非必须信息失败");
+                sqlSession.rollback();
+            }
+            sqlSession.commit();
+        }catch (Exception e){
+            /** 即使抛出异常，也算注册成功 */
+            logger.error("更新用户信息失败" + e.getMessage());
+            return true;
+        }
+        return true;
+    }
+
+    /**
+     * 激活用户
+     * @param status
+     * @return
+     */
+    public Boolean activeUser(UserStatus status){
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        Integer userId = status.getUserId();
+        String activeCode = status.getActiveCode();
+        String registryChannel = status.getRegistryChannel();
+        if(userId == null || userId <= 0 || StringUtils.isEmpty(activeCode) || StringUtils.isEmpty(registryChannel)){
+            return false;
+        }
+        try {
+            UserStatus userStatus = mapper.getUserStatus(status.getUserId());
+            if(userId.equals(userStatus.getUserId()) &&
+                    activeCode.equals(status.getActiveCode()) &&
+                    registryChannel.equals(status.getRegistryChannel())){
+                logger.error("传入的信息错误" + status);
+            }
+            /** 修改用户的激活状态 */
+            if(mapper.activeUser(userId) <= 0){
+                sqlSession.rollback();
+                return false;
+            }
+            sqlSession.commit();
+        }catch (Exception e){
+            logger.error("获取激活信息出现异常" + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 插入激活码信息
+     * @param status
+     * @return
+     */
+    public Boolean insertActiveCode(UserStatus status){
+        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+        Integer userId = status.getUserId();
+        String activeCode = status.getActiveCode();
+        String registryChannel = status.getRegistryChannel();
+        if(userId == null || userId <= 0 ||StringUtils.isEmpty(activeCode) || StringUtils.isEmpty(registryChannel)){
+            return false;
+        }
+        try {
+            if(mapper.insertUserActiveCode(userId,activeCode,registryChannel) <= 0){
+                sqlSession.rollback();
+                logger.error("插入用户激活信息失败");
+                return false;
+            }
+            sqlSession.commit();
+        }catch (Exception e){
+            logger.error("插入激活信息出现异常" + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 记录用户的行为
+     * @return
+     */
+    public Boolean recordUserBehavior(UserBehavior userBehavior){
+        return true;
     }
 }

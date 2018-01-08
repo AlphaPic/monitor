@@ -64,7 +64,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             logger.error("获取用户id失败");
             return false;
         }
-        User user = userDBService.getUser(userId);
+        User user = userDBService.getUserByUserId(userId);
         if(user == null){
             logger.error("没有获取到用户的数据");
             return false;
