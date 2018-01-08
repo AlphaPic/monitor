@@ -211,6 +211,14 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 response.setErrorMessage("用户注册的窗口时间已经过了，请重新获取验证码");
                 return response;
             }
+            /** 判断用户是否已经注册,目前只支持邮箱注册 */
+            String userName = request.getEmail();
+            User registryedUser = userDBService.getUserByUserName(userName);
+            if(registryedUser != null){
+                logger.error("用户已经存在" + registryedUser);
+                return AlphaResponse.error("-1","用户已经存在,请直接登录");
+            }
+
             /** 校验用户的入参，入参使用spring本身的特性进行校验，这里只校验可选入参,注册时的参数分为必输参数和可选参数 */
             Integer paramVal = verifyRegistryInfo(request);
             if(paramVal == -1){
