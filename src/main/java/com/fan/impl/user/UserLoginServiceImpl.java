@@ -4,6 +4,7 @@ import com.fan.consts.AuthEnum;
 import com.fan.consts.BasicEnum;
 import com.fan.consts.EncryptEnum;
 import com.fan.consts.InitConfig;
+import com.fan.dao.interfaces.baseService.IUserDBService;
 import com.fan.dao.interfaces.user.IUserLoginService;
 import com.fan.dao.model.AlphaResponse;
 import com.fan.framework.annotation.Auth;
@@ -14,6 +15,7 @@ import com.fan.vo.response.user.UserInfoResponseVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserLoginServiceImpl implements IUserLoginService{
     private static final Logger logger = LoggerFactory.getLogger(UserLoginServiceImpl.class);
 
+    @Autowired
+    private IUserDBService userDBService;
+
     /**
      * 登录
      * 1.登录首先将检查redis中有没有这个cookie，没有直接返回错误
@@ -42,7 +47,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "com.fan.user.Login",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/com.fan.user.Login/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.UNCESSARY)
     @Override
     public AlphaResponse<Boolean> login(UserLoginRequest request) {
@@ -78,7 +83,7 @@ public class UserLoginServiceImpl implements IUserLoginService{
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "com.fan.user.getCookie",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/com.fan.user.getCookie/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
     @Auth(AuthEnum.UNCESSARY)
     @Override
     public AlphaResponse<String> getLoginCookie(CookieRequest request) {
