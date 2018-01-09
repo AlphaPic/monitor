@@ -17,6 +17,7 @@ import java.util.Date;
 @Mapper
 public interface IUserMapper {
 
+    /*****************************************************用户表相关操作***************************************************************/
     /** 根据userid查询用户信息 */
     @Select("SELECT * FROM USERINFO WHERE userid = #{userid}")
     User getUserInfoByUserId(@Param("userid") Integer userid);
@@ -75,12 +76,18 @@ public interface IUserMapper {
     @Select("SELECT COUNT(*) FROM USERINFO")
     Long getUserCount();
 
+    /** 激活用户 */
+    @Update("UPDATE USERINFO SET isactive = 1 WHERE userid = #{userid}")
+    int activeUser(@Param("userid") Integer userid);
+
+    /*****************************************************用户执行历史表相关操作***********************************************************/
     /** 插入用户操作的状态 */
     @Insert("INSERT INTO USEROPERATION (userid,operationtime,activity) VALUES(#{userid},#{operationtime},#{activity})")
     int insertUserOperation(@Param("userid")           Integer     userid,
                             @Param("operationtime")    Date        operationtime,
                             @Param("activity")         String      activity);
 
+    /*****************************************************用户状态表相关操作*************************************************************/
     /** 生成用户激活码 */
     @Insert("INSERT INTO USERSTATUS(userid,activecode,registrychannel) VALUES(#{userid},#{activecode},#{registrychannel})")
     int insertUserActiveCode(@Param("userid")          Integer     userid,
@@ -91,6 +98,14 @@ public interface IUserMapper {
     @Select("SELECT * FROM USERSTATUS WHERE USERID = #{userid}")
     UserStatus getUserStatus(@Param("userid") Integer userid);
 
-    @Update("UPDATE USERINFO SET isactive = 1 WHERE userid = #{userid}")
-    int activeUser(@Param("userid") Integer userid);
+    /*****************************************************用户安全表相关操作*************************************************************/
+    /** 保存密码 */
+    @Insert("INSERT INFO USERSECURITY (userid,userhash) values (#{userid},#{userhash})")
+    int savePasswordToUserSecurity(@Param("userid")     Integer userid,
+                                   @Param("userhash")   String userhash);
+
+    /** 更新密码 */
+    @Update("UPDATE USERSECURITY SET userhash = #{userhash} where userid = #{userid}")
+    int updatePasswordToUserSecurity(@Param("userid")   Integer userid,
+                                     @Param("userhash") String userhash);
 }
