@@ -1,6 +1,7 @@
 package com.fan.utils;
 
 import com.fan.consts.EncryptEnum;
+import com.fan.consts.InitConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +62,7 @@ public class EncryptUtils {
                 res = new BigInteger(1,sha1Bytes).toString();
                 break;
             case SHA_256:/** sha-256加密 */
-                sha1.update(origin.getBytes());
+                sha1.update((InitConfig.SHA_256_SALT + origin).getBytes());
                 byte[] sha256Bytes = sha256.digest();
                 res = new BigInteger(1,sha256Bytes).toString();
                 break;

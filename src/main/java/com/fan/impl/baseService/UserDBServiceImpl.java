@@ -2,10 +2,7 @@ package com.fan.impl.baseService;
 
 import com.fan.dao.interfaces.baseService.IUserDBService;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
-import com.fan.dao.model.basicService.Address;
-import com.fan.dao.model.basicService.User;
-import com.fan.dao.model.basicService.UserBehavior;
-import com.fan.dao.model.basicService.UserStatus;
+import com.fan.dao.model.basicService.*;
 import com.fan.utils.RandomUtils;
 import com.fan.utils.RegexUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -326,6 +323,35 @@ public class UserDBServiceImpl implements IUserDBService{
             return false;
         }
         return true;
+    }
+
+    /**
+     * 保存用户密码
+     * @param security
+     * @return
+     */
+    public Boolean saveUserPassword(UserSecurity security){
+        return false;
+    }
+
+    /**
+     * 更新密码
+     * @param security
+     * @return
+     */
+    @Override
+    public Boolean updateUserPassword(UserSecurity security) {
+        return null;
+    }
+
+    /**
+     * 通过姓名获取密码信息
+     * @param userName
+     * @return
+     */
+    @Override
+    public UserSecurity getUserPasswordInfo(String userName) {
+        return null;
     }
 
     /**

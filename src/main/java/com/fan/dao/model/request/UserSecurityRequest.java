@@ -19,6 +19,10 @@ public class UserSecurityRequest extends AlphaRequest {
      */
     private String alphaCookie;
     /**
+     * 密码
+     */
+    private String password;
+    /**
      * 原密码hash
      */
     private String passwordOriginHash;
@@ -51,11 +55,21 @@ public class UserSecurityRequest extends AlphaRequest {
         this.passwordNewHash = passwordNewHash;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"alphaCookie\":\"")
                 .append(alphaCookie).append('\"');
+        sb.append(",\"password\":\"")
+                .append(password).append('\"');
         sb.append(",\"passwordOriginHash\":\"")
                 .append(passwordOriginHash).append('\"');
         sb.append(",\"passwordNewHash\":\"")

@@ -1,6 +1,7 @@
 package com.fan.dao.interfaces.baseService;
 
 import com.fan.dao.model.basicService.User;
+import com.fan.dao.model.basicService.UserSecurity;
 
 /**
  * @author:fanwenlong
@@ -36,4 +37,25 @@ public interface IUserDBService {
      * @return
      */
     public Boolean insertUserAllInfo(User user);
+
+    /**
+     * 保存用户密码
+     * @param security
+     * @return
+     */
+    public Boolean saveUserPassword(UserSecurity security);
+
+    /**
+     * 更新用户密码
+     * @param security
+     * @return
+     */
+    public Boolean updateUserPassword(UserSecurity security);
+
+    /**
+     * 通过用户名称拿到用户密码信息
+     * @param userName
+     * @return
+     */
+    public UserSecurity getUserPasswordInfo(String userName);
 }

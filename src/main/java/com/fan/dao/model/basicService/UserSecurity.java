@@ -15,18 +15,18 @@ public class UserSecurity implements Serializable{
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userName;
     /**
      * 用户密码的hash值
      */
     private String userHash;
 
-    public Integer getUserId() {
-        return userId;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserHash() {
@@ -40,8 +40,8 @@ public class UserSecurity implements Serializable{
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"userId\":")
-                .append(userId);
+        sb.append("\"userName\":\"")
+                .append(userName).append('\"');
         sb.append(",\"userHash\":\"")
                 .append(userHash).append('\"');
         sb.append('}');

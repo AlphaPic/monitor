@@ -113,4 +113,7 @@ public interface InitConfig {
     String  MAIL_QQ_SMTP_USERNAME                   = "1693293713@qq.com";                                            /** 邮箱名称 */
     String  MAIL_QQ_SMTP_AUTHCODE                   = "kwfitspfcxpmbaji";                                             /** 授权码 */
 //    String  MAIL_QQ_SMTP_
+
+    /** 安全相关的常量 */
+    String  SHA_256_SALT                            = "BEB71621AB18BACA59FC0BC096BEC5F32744044DDAA07C0722A45151B5B25DAADA33CAA0EBF6FE2975499B334A9306A212D44731166E56C07EFEA11FEF39C6A1C0C5D4AD451CDEC6A102CD8FEA6FBDF81B967081819B7B36332A6065798D4D0331F60B27849505EEAA7DDDB9DB2259CAC46428A0DC54DC9E4F74EA0C51C5DC06"; /** SHA-256加密前缀 */
 }
