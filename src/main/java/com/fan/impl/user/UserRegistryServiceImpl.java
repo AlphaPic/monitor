@@ -4,6 +4,7 @@ import com.fan.consts.BasicEnum;
 import com.fan.consts.InitConfig;
 import com.fan.consts.UserConfig;
 import com.fan.dao.interfaces.baseService.IMailService;
+import com.fan.dao.interfaces.baseService.IUserCacheService;
 import com.fan.dao.interfaces.user.IUserRegistryService;
 import com.fan.dao.model.AlphaResponse;
 import com.fan.dao.model.basicService.Address;
@@ -19,8 +20,6 @@ import com.fan.framework.annotation.MonitorController;
 import com.fan.impl.baseService.UserDBServiceImpl;
 import com.fan.utils.RandomUtils;
 import com.fan.utils.RegexUtils;
-import org.apache.kafka.common.protocol.types.Field;
-import org.omg.CORBA.TIMEOUT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -56,6 +53,9 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
 
     @Autowired
     private UserDBServiceImpl userDBService;
+
+    @Autowired
+    private IUserCacheService userCacheService;
 
     /**
      * 获取验证码
@@ -172,12 +172,10 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
                 return response;
             }
 
-
-
             /** 运行到这里来了，表示已经验证成功，该cookie取得了注册权限 */
-            String loadPermit = UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT + cookie;
+            String registryPermit = UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT + cookie;
 
-            redisTemplate.opsForValue().set(loadPermit,"true",UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT_TIME,TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(registryPermit,"true",UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT_TIME,TimeUnit.SECONDS);
             /** 在这里必须对email和cookie之间绑定的进行重新赋值，时间为300s */
             redisTemplate.opsForValue().set(cookieAccount,accountName,UserConfig.REDIS_REGISTRY_ACCOUNT_REGISTRY_PERMIT_TIME,TimeUnit.SECONDS);
             response.setDate(true);
@@ -261,12 +259,15 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
             }
             /** 传输成功，则发出一个注册成功的消息到消息队列,消息队列暂时不做复杂的处理 */
             sendARegistryMessage(user);
+            /** 设置用户的登录权限，并返回 */
+            userCacheService.setUserLoginPermit(cookieAccount,userName);
+            response.setMessage("注册成功");
+            response.setDate(true);
         }catch (Exception e){
             logger.error("redis读取出现异常",e.getMessage());
             return AlphaResponse.error("-1","抱歉，系统内部出现异常，请稍后再试");
         }
-        response.setMessage("注册成功");
-        response.setDate(true);
+
 
         return response;
     }
@@ -289,16 +290,6 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
         user.setMobile(request.getMobile());
         user.setCompany(request.getCompany());
         user.setHobby(request.getHobby());
-//        if(hobies != null && hobies.length > 0){
-//            String hobieString = "";
-//            for(String hobie : hobies){
-//                hobieString += hobie + ",";
-//            }
-//            if(hobieString.endsWith(",")){
-//                hobieString = hobieString.substring(0,hobieString.lastIndexOf(','));
-//            }
-//
-//        }
         /** 设置地址信息 */
         Address address = new Address();
         address.setCity(request.getCity());

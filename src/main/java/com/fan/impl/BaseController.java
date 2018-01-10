@@ -30,10 +30,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author:fanwenlong
@@ -48,6 +45,10 @@ public class BaseController {
 
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
+
+    @Autowired
+    @Qualifier("objectRedisTemplate")
+    private RedisTemplate<String,Object> objectRedisTemplate;
 
     @Autowired
     private UserDBServiceImpl userDBService;
@@ -85,7 +86,7 @@ public class BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/api.base.test/1.0.0",method = {RequestMethod.GET,RequestMethod.POST})
-    @Auth(AuthEnum.UNCESSARY)
+//    @Auth(AuthEnum.UNCESSARY)
     public Map<String,Object> json(@RequestParam(value = "name" ,defaultValue = "user")String name) throws MessagingException {
         Map<String,Object> map = null;
         try {
@@ -102,16 +103,16 @@ public class BaseController {
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(redisTemplate.opsForValue().get("a"));
 //        System.out.println(cf.getConvertPipelineAndTxResults());
-        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
-        User user = new User();
-        user.setUserId(1004);
-        user.setUserNo("1090908938900");
-        user.setUserName("hello");
-        user.setSex("male");
-        user.setAge(12);
-        user.setBorn(new Date(System.currentTimeMillis()));
-        userDBService.insertUserNessaryInfo(user);
-        System.out.println(mapper.getUserInfoByUserId(1004));
+//        IUserMapper mapper = sqlSession.getMapper(IUserMapper.class);
+//        User user = new User();
+//        user.setUserId(1004);
+//        user.setUserNo("1090908938900");
+//        user.setUserName("hello");
+//        user.setSex("male");
+//        user.setAge(12);
+//        user.setBorn(new Date(System.currentTimeMillis()));
+//        userDBService.insertUserNessaryInfo(user);
+//        System.out.println(mapper.getUserInfoByUserId(1004));
 //        logger.info(String.valueOf(mapper.getUserInfo(1)));
 //        logger.info(String.valueOf(zk.getState().isAlive()));
 //        logger.info("----------------");
@@ -132,6 +133,8 @@ public class BaseController {
 //        helper.setText("hello");
 //
 //        sender.send(message);
+        List<String> list = (List<String>) objectRedisTemplate.opsForValue().get("hello");
+        System.out.println();
         return map;
     }
 }

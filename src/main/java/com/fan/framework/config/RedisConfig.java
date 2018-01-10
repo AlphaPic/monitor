@@ -1,6 +1,7 @@
 package com.fan.framework.config;
 
 import com.fan.consts.InitConfig;
+import com.fan.dao.model.basicService.Address;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -8,8 +9,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
+
+import java.util.Map;
 
 /**
  * @author:fanwenlong
@@ -55,6 +59,17 @@ public class RedisConfig {
     }
 
     /** key-value的类型为String-Object类型的模板 */
+    @Bean(name = "objectRedisTemplate")
+    public RedisTemplate<String,Object> getIntegerRedisTemplate(RedisConnectionFactory cf){
+        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<String,Object>();
+        redisTemplate.setConnectionFactory(cf);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
+    /** key-value的类型为String-Object类型的模板 */
     @Bean
     public RedisTemplate<String,Object> getObjectRedisTemplate(RedisConnectionFactory cf){
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<String,Object>();
@@ -72,6 +87,17 @@ public class RedisConfig {
 
 
         RedisTemplate redisTemplate = config.getStringRedisTemplate(cf);
-        redisTemplate.opsForValue().set("b","qweqwe");
+//        RedisTemplate redisTemplate = config.getObjectRedisTemplate(cf);
+//        Address address = new Address();
+//        address.setStreet("a");
+//        address.setProvince("b");
+//        address.setCountry("c");
+//        address.setCity("d");
+//        redisTemplate.opsForValue().set("address",address);
+//        Map<String,String> address1 = (Map<String, String>) redisTemplate.opsForValue().get("address");
+        redisTemplate.opsForValue().set("a","1");
+        redisTemplate.opsForValue().increment("a",1);
+//        System.out.println(address1.getCity() + "," + address1.getCountry() + "," + address1.getProvince() + "," + address1.getStreet());
+//        System.out.println(address1);
     }
 }

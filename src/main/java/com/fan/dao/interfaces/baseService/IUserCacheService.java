@@ -19,8 +19,27 @@ public interface IUserCacheService {
     /** 判断cookie是不是已经过期 */
     public Boolean isCookieOverDue(String cookie);
 
-    /** 通过cookie获取注册者名称 */
+    /** 通过cookie获取用户名称 */
     public String getUserNameByCookie(String cookie);
 
-    /**  */
+    /** 设置用户的登录权限 */
+    public Boolean setUserLoginPermit(String cookie,String userName);
+
+    /** 刷新用户的登录权限 */
+    public Boolean refreshUserLoginPermit(String cookie);
+
+    /** 增加用户的登录次数 */
+    public Boolean decreaseUserLoginTryTimes(String userName);
+
+    /** 获取用户的登录次数 */
+    public Integer getUserLoginTimes(String userName);
+
+    /** 判断用户是不是锁住了 */
+    public Boolean isUserLoginLocked(String userName);
+
+    /** 设置用户的登录次数 */
+    public Boolean setUserLoginTimes(String userName,Integer times);
+
+    /** 删除用户的登录信息 */
+    public Boolean deleteUserLoginInfo(String cookie);
 }

@@ -18,23 +18,21 @@ public class CancelRequest extends AlphaRequest {
      * 用户cookie
      */
     @NotNull(message = "用户cookie不能为空")
-    private String monitorCookie;
+    private String alphaCookie;
 
-    @Override
-    public String getMonitorCookie() {
-        return monitorCookie;
+    public String getAlphaCookie() {
+        return alphaCookie;
     }
 
-    @Override
-    public void setMonitorCookie(String monitorCookie) {
-        this.monitorCookie = monitorCookie;
+    public void setAlphaCookie(String alphaCookie) {
+        this.alphaCookie = alphaCookie;
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("{");
-        sb.append("\"monitorCookie\":\"")
-                .append(monitorCookie).append('\"');
+        sb.append("\"alphaCookie\":\"")
+                .append(alphaCookie).append('\"');
         sb.append('}');
         return sb.toString();
     }
