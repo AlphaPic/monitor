@@ -40,6 +40,8 @@ public class UserLoginFilter implements Filter{
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest req  = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
+
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin","*"); //允许所有网站进行跨域访问
         /** 使用开关进行过滤器开关控制 */
         if(InitConfig.FILTER_LOGIN_BUTTON == false){
             filterChain.doFilter(servletRequest,servletResponse);
