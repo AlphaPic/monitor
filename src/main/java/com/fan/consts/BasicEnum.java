@@ -25,7 +25,7 @@ public class BasicEnum {
 
     /** 支持的注册类型 */
     public static enum REGISTRY_TYPE{
-        MAIL("mail"),
+        MAIL("email"),
         MOBILE("mobile"),
         UNKNOWNTYPE("unknown");
 

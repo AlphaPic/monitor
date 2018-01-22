@@ -133,6 +133,8 @@ public class BaseController {
 //        helper.setText("hello");
 //
 //        sender.send(message);
+
+        userDBService.loadAddressFromDB("中国");
         List<String> list = (List<String>) objectRedisTemplate.opsForValue().get("hello");
         System.out.println();
         return map;

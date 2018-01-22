@@ -1,6 +1,8 @@
 package com.fan.impl.baseService;
 
+import com.fan.consts.UserConfig;
 import com.fan.dao.interfaces.baseService.IUserDBService;
+import com.fan.dao.interfaces.baseService.mapper.IAddressMapper;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
 import com.fan.dao.model.basicService.*;
 import com.fan.utils.RandomUtils;
@@ -9,10 +11,14 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author:fanwenlong
@@ -28,6 +34,9 @@ public class UserDBServiceImpl implements IUserDBService{
 
     @Autowired
     private SqlSession sqlSession;
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     /**
      * 根据用户id去获取用户的相关信息
@@ -352,6 +361,86 @@ public class UserDBServiceImpl implements IUserDBService{
     @Override
     public UserSecurity getUserPasswordInfo(String userName) {
         return null;
+    }
+
+    /**
+     * 将地址信息加载到缓存之中
+     * @param country
+     * @return
+     */
+    @Override
+    public Boolean loadAddressFromDB(String country) {
+        if(StringUtils.isEmpty(country)){
+            return false;
+        }
+
+        try {
+            /** 判断该国家是否存在于缓存，有则删除相关的所有信息 */
+            String countryKey = UserConfig.REDIS_ADDRESS_COUNTRY + country;
+            if (redisTemplate.hasKey(countryKey)) {
+                Set<String> provinceSet = redisTemplate.opsForSet().members(countryKey);
+                Iterator iterator = provinceSet.iterator();
+                while (iterator.hasNext()){
+                    String provinceName = (String) iterator.next();
+                    String provinceKey = UserConfig.REDIS_ADDRESS_PROVINCE + provinceName;
+                    if (redisTemplate.hasKey(provinceKey) == false) {
+                        continue;
+                    }
+                    redisTemplate.delete(provinceKey);
+                }
+            }
+
+            redisTemplate.delete(countryKey);
+
+            /** 重新设置相关信息 */
+
+            IAddressMapper mapper = sqlSession.getMapper(IAddressMapper.class);
+            List<Address> addressList = mapper.getProvinces(country);
+
+            if (addressList == null || addressList.isEmpty()) {
+                logger.info("没有找到" + country + "所对应的相关信息");
+                return false;
+            }
+
+            Iterator iterator = addressList.iterator();
+            while (iterator.hasNext()) {
+                Address address = (Address) iterator.next();
+                String countryInput = UserConfig.REDIS_ADDRESS_COUNTRY + address.getCountry();
+                String provinceInput = UserConfig.REDIS_ADDRESS_PROVINCE + address.getProvince();
+                if (country.equals(address.getCountry()) == false) {
+                    continue;
+                }
+                /** 写入省份和城市信息 */
+                /** 包括去重 */
+                redisTemplate.opsForSet().add(countryInput, address.getProvince());
+                redisTemplate.opsForSet().add(provinceInput, address.getCity());
+            }
+        }catch (Exception e){
+            logger.error("redis操作失败" + e.getMessage());
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 判断国家是不是存在
+     * @param country
+     * @return
+     */
+    @Override
+    public Boolean countryExists(String country) {
+        return redisTemplate.hasKey(UserConfig.REDIS_ADDRESS_COUNTRY + country);
+    }
+
+    /**
+     * 判断省份是不是存在
+     * @param province
+     * @return
+     */
+    @Override
+    public Boolean provinceExists(String province) {
+        return redisTemplate.hasKey(UserConfig.REDIS_ADDRESS_PROVINCE + province);
     }
 
     /**

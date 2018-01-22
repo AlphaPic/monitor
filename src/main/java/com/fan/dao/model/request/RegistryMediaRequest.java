@@ -20,7 +20,7 @@ public class RegistryMediaRequest extends AlphaRequest{
     /**
      * 注册邮件
      */
-    private String mail;
+    private String email;
 
     /**
      * 注册手机
@@ -35,12 +35,12 @@ public class RegistryMediaRequest extends AlphaRequest{
         this.registryType = registryType;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setMail(String mail) {
-        this.mail = mail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getMobile() {
@@ -56,8 +56,8 @@ public class RegistryMediaRequest extends AlphaRequest{
         final StringBuilder sb = new StringBuilder("{");
         sb.append("\"registryType\":\"")
                 .append(registryType).append('\"');
-        sb.append(",\"mail\":\"")
-                .append(mail).append('\"');
+        sb.append(",\"email\":\"")
+                .append(email).append('\"');
         sb.append(",\"mobile\":\"")
                 .append(mobile).append('\"');
         sb.append('}');

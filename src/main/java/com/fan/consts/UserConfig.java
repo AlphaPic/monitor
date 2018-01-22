@@ -23,4 +23,9 @@ public interface UserConfig {
     String REDIS_LOGIN_TRY_TIMES                        = "REDIS_LOGIN_TRY_TIMES_";                  /** 用户的尝试次数 */
     String REDIS_LOGIN_LOCK                             = "REDIS_LOGIN_LOCK_";                       /** 用户登录锁 */
     Integer REDIS_LOGIN_TIMES                           = 3;                                         /** 默认次数 */
+
+    /** ****************************************地址信息**************************************** **/
+    String REDIS_ADDRESS_COUNTRY                        = "REDIS_ADDRESS_COUNTRY_";                  /** 国家的缓存信息 */
+    String REDIS_ADDRESS_PROVINCE                       = "REDIS_ADDRESS_PROVINCE_";                 /** 省份的缓存信息 */
+    String REDIS_ADDRESS_CITY                           = "REDIS_ADDRESS_CITY_";                     /** 城市的缓存信息 */
 }

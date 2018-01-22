@@ -1,5 +1,6 @@
 package com.fan.dao.interfaces.baseService;
 
+import com.fan.dao.model.basicService.Address;
 import com.fan.dao.model.basicService.User;
 import com.fan.dao.model.basicService.UserSecurity;
 
@@ -58,4 +59,25 @@ public interface IUserDBService {
      * @return
      */
     public UserSecurity getUserPasswordInfo(String userName);
+
+    /**
+     * 通过国家名称来获取地址
+     * @param country
+     * @return
+     */
+    public Boolean loadAddressFromDB(String country);
+
+    /**
+     * 判断国家是不是存在
+     * @param country
+     * @return
+     */
+    public Boolean countryExists(String country);
+
+    /**
+     * 判断省份是否存在
+     * @param province
+     * @return
+     */
+    public Boolean provinceExists(String province);
 }

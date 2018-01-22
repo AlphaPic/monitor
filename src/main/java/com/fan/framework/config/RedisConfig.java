@@ -95,8 +95,14 @@ public class RedisConfig {
 //        address.setCity("d");
 //        redisTemplate.opsForValue().set("address",address);
 //        Map<String,String> address1 = (Map<String, String>) redisTemplate.opsForValue().get("address");
-        redisTemplate.opsForValue().set("a","1");
-        redisTemplate.opsForValue().increment("a",1);
+//        redisTemplate.opsForValue().set("a","1");
+//        redisTemplate.opsForValue().increment("a",1);
+
+        System.out.println(redisTemplate.hasKey("list11"));
+//        redisTemplate.opsForList().leftPush("list1","a");
+//        redisTemplate.opsForList().leftPush("list1","b");
+//        redisTemplate.opsForList().leftPush("list1","c");
+//        redisTemplate.opsForList().leftPush("list1","d");
 //        System.out.println(address1.getCity() + "," + address1.getCountry() + "," + address1.getProvince() + "," + address1.getStreet());
 //        System.out.println(address1);
     }

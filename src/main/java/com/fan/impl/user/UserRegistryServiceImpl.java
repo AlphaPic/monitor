@@ -70,7 +70,7 @@ public class UserRegistryServiceImpl implements IUserRegistryService{
         RegistryMediaResponse responseVo = new RegistryMediaResponse();
         response.setDate(responseVo);
         String registryType = request.getRegistryType();            /** 注册类型 */
-        String email        = request.getMail();                    /** email */
+        String email        = request.getEmail();                   /** email */
         String mobile       = request.getMobile();                  /** 手机号 */
 
         BasicEnum.REGISTRY_TYPE type = BasicEnum.REGISTRY_TYPE.getRegistryTypeSupport(registryType);

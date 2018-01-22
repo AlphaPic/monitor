@@ -29,9 +29,22 @@ public class Address implements Serializable{
     private String city;
 
     /**
+     * 邮政编号
+     */
+    private String postCode;
+
+    /**
      * 街道
      */
     private String street;
+
+    public String getPostCode() {
+        return postCode;
+    }
+
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
+    }
 
     public String getCountry() {
         return country;
@@ -74,6 +87,8 @@ public class Address implements Serializable{
                 .append(province).append('\"');
         sb.append(",\"city\":\"")
                 .append(city).append('\"');
+        sb.append(",\"postCode\":\"")
+                .append(postCode).append('\"');
         sb.append(",\"street\":\"")
                 .append(street).append('\"');
         sb.append('}');
