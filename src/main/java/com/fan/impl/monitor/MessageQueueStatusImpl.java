@@ -3,7 +3,9 @@ package com.fan.impl.monitor;
 import com.fan.dao.interfaces.monitor.MessageQueueStatusDao;
 import com.fan.dao.model.AlphaResponse;
 import com.fan.dao.model.request.MessageQueueStatusRequest;
+import com.fan.dao.model.request.MessageRequest;
 import com.fan.dao.model.response.MessageQueueStatusResponse;
+import com.fan.dao.model.response.MessageResponse;
 import com.fan.framework.annotation.MonitorController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,5 +38,17 @@ public class MessageQueueStatusImpl implements MessageQueueStatusDao{
         response.setMessage("队列数目已拿到");
         responseBody.setQueueNum(12);
         return response;
+    }
+
+    /**
+     * 获取用户消息信息
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/api.msg.getMessageInfo/1.0.0")
+    @Override
+    public AlphaResponse<MessageResponse> getMessageInfo(MessageRequest request) {
+        return null;
     }
 }

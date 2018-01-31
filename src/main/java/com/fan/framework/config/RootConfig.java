@@ -2,6 +2,7 @@ package com.fan.framework.config;
 
 import com.fan.framework.aspect.MethodReloadAspect;
 import com.fan.impl.monitor.MessageQueueStatusImpl;
+import com.fan.impl.monitor.UserVoExecutionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
          ZooKeeperConfig.class,
          KafkaConfig.class,
          MailConfig.class})
-@ComponentScan(basePackageClasses = {MethodReloadAspect.class,MessageQueueStatusImpl.class},
+@ComponentScan(basePackageClasses = {MethodReloadAspect.class},
         excludeFilters = {
             @ComponentScan.Filter(type = FilterType.ANNOTATION,value = EnableWebMvc.class)
         })

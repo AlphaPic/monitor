@@ -6,6 +6,7 @@ import com.fan.framework.interceptor.LoginInterceptor;
 import com.fan.framework.interceptor.SignatureInterceptor;
 import com.fan.impl.BaseController;
 import com.fan.impl.baseService.UserDBServiceImpl;
+import com.fan.impl.monitor.UserVoExecutionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.web.servlet.ViewResolver;

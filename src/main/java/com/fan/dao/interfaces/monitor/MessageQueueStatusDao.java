@@ -2,7 +2,9 @@ package com.fan.dao.interfaces.monitor;
 
 import com.fan.dao.model.AlphaResponse;
 import com.fan.dao.model.request.MessageQueueStatusRequest;
+import com.fan.dao.model.request.MessageRequest;
 import com.fan.dao.model.response.MessageQueueStatusResponse;
+import com.fan.dao.model.response.MessageResponse;
 
 /**
  * @author:fanwenlong
@@ -18,4 +20,11 @@ public interface MessageQueueStatusDao {
      * @return
      */
     public AlphaResponse<MessageQueueStatusResponse> getMessageQueueStatusInfo(MessageQueueStatusRequest request);
+
+    /**
+     * 获取消息接口
+     * @param request
+     * @return
+     */
+    public AlphaResponse<MessageResponse> getMessageInfo(MessageRequest request);
 }

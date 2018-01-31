@@ -97,7 +97,7 @@ public class AddressServiceImpl implements IAddressService {
             return AlphaResponse.error("-1","传入的参数不为省份名称");
         }
         /** 不存在则直接加载数据库中的资源 */
-        if(userDBService.countryExists(provinceName) == false){
+        if(userDBService.countryExists(countryName) == false){
             if(userDBService.loadAddressFromDB(countryName) == false){
                 logger.error("加载国家数据库失败");
                 return AlphaResponse.error("-1","获取国籍信息失败");

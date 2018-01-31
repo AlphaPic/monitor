@@ -2,8 +2,10 @@ package com.fan.impl;
 
 import com.fan.consts.AuthEnum;
 import com.fan.consts.InitConfig;
+import com.fan.dao.interfaces.baseService.IRequestResponseDBService;
 import com.fan.dao.interfaces.baseService.mapper.IUserMapper;
 import com.fan.dao.model.basicService.User;
+import com.fan.dao.model.monitor.RequestInfo;
 import com.fan.framework.annotation.*;
 import com.fan.framework.config.MailConfig;
 import com.fan.impl.baseService.UserDBServiceImpl;
@@ -52,6 +54,9 @@ public class BaseController {
 
     @Autowired
     private UserDBServiceImpl userDBService;
+
+    @Autowired
+    private IRequestResponseDBService requestResponseDBService;
 
     @Autowired
     private SqlSession sqlSession;
@@ -133,8 +138,10 @@ public class BaseController {
 //        helper.setText("hello");
 //
 //        sender.send(message);
+        List <RequestInfo> list1 = requestResponseDBService.getRequestInfo("class1");
 
-        userDBService.loadAddressFromDB("中国");
+
+//        userDBService.loadAddressFromDB("中国");
         List<String> list = (List<String>) objectRedisTemplate.opsForValue().get("hello");
         System.out.println();
         return map;
