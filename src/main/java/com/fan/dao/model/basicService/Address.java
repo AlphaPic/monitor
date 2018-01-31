@@ -1,5 +1,8 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.ClassVo;
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -10,32 +13,38 @@ import java.io.Serializable;
  * @description:地址信息
  * @detail:
  */
+@ClassVo(name = "BASIC")
 public class Address implements Serializable{
     private static final long serialVersionUID = 5697851584102576446L;
 
     /**
      * 国家
      */
+    @VariableVo(comment = "国家")
     private String country;
 
     /**
      * 省份
      */
+    @VariableVo(comment = "省份")
     private String province;
 
     /**
      * 城市
      */
+    @VariableVo(comment = "城市")
     private String city;
 
     /**
      * 邮政编号
      */
+    @VariableVo(comment = "邮政编号")
     private String postCode;
 
     /**
      * 街道
      */
+    @VariableVo(comment = "街道")
     private String street;
 
     public String getPostCode() {
