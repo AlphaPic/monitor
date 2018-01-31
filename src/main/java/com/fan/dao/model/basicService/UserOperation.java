@@ -1,5 +1,7 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -17,16 +19,19 @@ public class UserOperation implements Serializable{
     /**
      * 用户id
      */
+    @VariableVo(comment = "用户id")
     private Long userId;
 
     /**
      * 创建时间
      */
+    @VariableVo(comment = "创建时间")
     private Date operateTime;
 
     /**
      * 活动时间
      */
+    @VariableVo(comment = "活动时间")
     private String activity;
 
     public Long getUserId() {

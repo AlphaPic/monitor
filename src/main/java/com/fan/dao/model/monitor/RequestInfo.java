@@ -1,5 +1,7 @@
 package com.fan.dao.model.monitor;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -15,26 +17,31 @@ public class RequestInfo implements Serializable {
     /**
      * 元素名称
      */
+    @VariableVo(comment = "元素名称")
     private String name;
 
     /**
      * 元素类型
      */
+    @VariableVo(comment = "元素类型")
     private String type;
 
     /**
      * 描述
      */
+    @VariableVo(comment = "描述")
     private String description;
 
     /**
      * 样例值
      */
+    @VariableVo(comment = "样例值")
     private String demoval;
 
     /**
      * 类名
      */
+    @VariableVo(comment = "类名")
     private String classname;
 
     public String getName() {

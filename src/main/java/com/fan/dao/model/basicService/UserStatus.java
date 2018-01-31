@@ -1,5 +1,7 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -16,16 +18,19 @@ public class UserStatus implements Serializable{
     /**
      * 用户id
      */
+    @VariableVo(comment = "用户id")
     private Integer userId;
 
     /**
      * 激活码
      */
+    @VariableVo(comment = "激活码")
     private String activeCode;
 
     /**
      * 注册渠道
      */
+    @VariableVo(comment = "注册渠道")
     private String registryChannel;
 
     public UserStatus() {

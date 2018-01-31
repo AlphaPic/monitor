@@ -1,5 +1,7 @@
 package com.fan.dao.model.monitor;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,7 @@ public class VoType implements Serializable{
     /**
      * vo类型信息
      */
+    @VariableVo(comment = "vo类型信息")
     private String voTypeInfo;
 
     public String getVoTypeInfo() {

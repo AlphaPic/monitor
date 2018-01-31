@@ -1,5 +1,7 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,71 +19,85 @@ public class User implements Serializable{
     /**
      * 用户id
      */
+    @VariableVo(comment = "用户id")
     private Integer userId;
 
     /**
      * 用户名称
      */
+    @VariableVo(comment = "用户名称")
     private String userName;
 
     /**
      * 用户编号
      */
+    @VariableVo(comment = "用户编号")
     private String userNo;
 
     /**
      * 年龄
      */
+    @VariableVo(comment = "年龄")
     private Integer age;
 
     /**
      * 性别
      */
+    @VariableVo(comment = "性别")
     private String sex;
 
     /**
      * 出生年月
      */
+    @VariableVo(comment = "出生年月")
     private Date born;
 
     /**
      * 地址信息
      */
+    @VariableVo(comment = "地址信息")
     private Address address;
 
     /**
      * 大学
      */
+    @VariableVo(comment = "大学")
     private String collage;
 
     /**
      * 公司
      */
+    @VariableVo(comment = "公司")
     private String company;
 
     /**
      * 用户创建时间
      */
+    @VariableVo(comment = "用户创建时间")
     private Date createTime;
 
     /**
      * 手机
      */
+    @VariableVo(comment = "手机")
     private String mobile;
 
     /**
      * 邮箱
      */
+    @VariableVo(comment = "邮箱")
     private String email;
 
     /**
      * 用户的特长和爱好
      */
+    @VariableVo(comment = "用户的特长和爱好")
     private String hobby;
 
     /**
      * 是否激活
      */
+    @VariableVo(comment = "是否激活")
     private Boolean isActive;
 
     public Integer getUserId() {

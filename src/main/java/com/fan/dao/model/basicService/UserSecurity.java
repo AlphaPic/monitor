@@ -1,5 +1,7 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -15,10 +17,12 @@ public class UserSecurity implements Serializable{
     /**
      * 用户id
      */
+    @VariableVo(comment = "用户id")
     private String userName;
     /**
      * 用户密码的hash值
      */
+    @VariableVo(comment = "用户密码的hash值")
     private String userHash;
 
     public String getUserName() {

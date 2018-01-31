@@ -197,7 +197,7 @@ public class ScanClassVoUtils {
             Class clazz = Class.forName(pre2);
             String className = clazz.getName();
 
-            insertVo.className = className;
+            insertVo.className = className.substring(className.lastIndexOf(".") + 1);
             Field[] fields = clazz.getDeclaredFields();
             if(fields == null || fields.length <= 0){
                 return null;
@@ -222,7 +222,7 @@ public class ScanClassVoUtils {
                 TypeVo typeVo = new TypeVo();
                 typeVo.comment = comment;
                 typeVo.name    = member;
-                typeVo.type    = type;
+                typeVo.type    = type.substring(type.lastIndexOf(".") + 1);
                 typeVo.demoVal = demoval;
                 list.add(typeVo);
             }

@@ -1,5 +1,7 @@
 package com.fan.dao.model.basicService;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,26 +19,31 @@ public class AlphaMessageInfo implements Serializable{
     /**
      * 发送者
      */
+    @VariableVo(comment = "国家")
     private String from;
 
     /**
      * 接受者(单个)
      */
+    @VariableVo(comment = "国家")
     private String singleDest;
 
     /**
      * 接受者(多个人)
      */
+    @VariableVo(comment = "国家")
     private List<String> multiDest;
 
     /**
      * 是否发送给多个人
      */
+    @VariableVo(comment = "国家")
     private Boolean isMultiSender;
 
     /**
      * 正文
      */
+    @VariableVo(comment = "国家")
     private String text;
 
     public AlphaMessageInfo() {
