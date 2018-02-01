@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,18 +19,21 @@ public class ActivateUserRequest extends AlphaRequest {
      * 用户id
      */
     @NotNull(message = "cookie不能为空")
+    @VariableVo(comment = "用户id",demoVal = "10000029237192371927391")
     private String alphaCookie;
 
     /**
      * 激活码
      */
     @NotNull(message = "激活码不能为空")
+    @VariableVo(comment = "激活码",demoVal = "12345678")
     private String activeCode;
 
     /**
      * 注册渠道
      */
     @NotNull(message = "注册渠道不能为空")
+    @VariableVo(comment = "注册渠道",demoVal = "IPHONE")
     private String registryChannel;
 
     public String getAlphaCookie() {

@@ -2,6 +2,7 @@ package com.fan.dao.model.request;
 
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 import javax.validation.constraints.NotNull;
 
@@ -16,6 +17,7 @@ public class MessageQueueStatusRequest extends AlphaRequest {
     private static final long serialVersionUID = -4608447012023024362L;
 
     @NotNull(message = "name can't be null")
+    @VariableVo(comment = "名称",demoVal = "CHECKMESSAGE")
     private String name;
 
     public String getName() {

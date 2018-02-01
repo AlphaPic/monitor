@@ -1,5 +1,7 @@
 package com.fan.dao.model.response;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -16,11 +18,13 @@ public class RegistryMediaResponse implements Serializable {
     /**
      * 是否成功
      */
+    @VariableVo(comment = "是否成功")
     private Boolean isSuccess;
 
     /**
      * cookie
      */
+    @VariableVo(comment = "cookie")
     private String alphaCookie;
 
     public Boolean getSuccess() {

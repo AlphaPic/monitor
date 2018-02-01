@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -20,65 +21,78 @@ public class RegistryRequest extends AlphaRequest{
      * 性别
      */
     @NotNull(message = "性别不能为空")
+    @VariableVo(comment = "性别",demoVal = "male")
     private String sex;
 
     /**
      * 年龄
      */
     @NotNull(message = "年龄不能为空")
+    @VariableVo(comment = "年龄",demoVal = "12")
     private Integer age;
 
     /**
      * 出生年月
      */
     @NotNull(message = "出生年月不能为空")
+    @VariableVo(comment = "出生年月",demoVal = "1992-12-09")
     private String born;
 
     /** 地址信息，选传 */
     /**
      * 国家
      */
+    @VariableVo(comment = "国家",demoVal = "中国")
     private String country;
     /**
      * 省份
      */
+    @VariableVo(comment = "省份",demoVal = "安徽")
     private String province;
     /**
      * 城市
      */
+    @VariableVo(comment = "城市",demoVal = "安庆")
     private String city;
     /**
      * 街道
      */
+    @VariableVo(comment = "街道",demoVal = "猛鬼街148号")
     private String street;
 
     /** 与职业相关信息，选传 */
     /**
      * 大学
      */
+    @VariableVo(comment = "大学",demoVal = "武汉理工")
     private String collage;
     /**
      * 公司
      */
+    @VariableVo(comment = "公司",demoVal = "驴妈妈")
     private String company;
 
     /** 联系方式，不需传，从缓存之中获取 */
     /**
      * 手机
      */
+    @VariableVo(comment = "手机",demoVal = "18603074401")
     private String mobile;
 
     /**
      * 邮箱
      */
+    @VariableVo(comment = "邮箱",demoVal = "alpha18603074401@gmail.com")
     private String email;
 
     /**
      * cookie
      */
+    @VariableVo(comment = "cookie",demoVal = "1872634161876347128946189")
     private String alphaCookie;
 
     /** 技术特长，选传 */
+    @VariableVo(comment = "技术特长",demoVal = "篮球、跑步")
     private String hobby;
 
     public String getAlphaCookie() {

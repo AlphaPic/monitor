@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 /**
  * @author:fanwenlong
@@ -16,11 +17,13 @@ public class RegistryCodeRequest extends AlphaRequest {
     /**
      * cookie
      */
+    @VariableVo(comment = "cookie",demoVal = "109872hasdhfahsdfq8o23yr9qahsfag23y89rywi")
     private String alphaCookie;
 
     /**
      * 验证码
      */
+    @VariableVo(comment = "验证码",demoVal = "12345678")
     private String authCode;
 
     public String getAlphaCookie() {

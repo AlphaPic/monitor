@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 
 /**
@@ -17,6 +18,7 @@ public class RequestVoSearchRequest extends AlphaRequest{
     /**
      * 类名
      */
+    @VariableVo(comment = "类名",demoVal = "RequestVoSearchRequest")
     private String className;
 
 

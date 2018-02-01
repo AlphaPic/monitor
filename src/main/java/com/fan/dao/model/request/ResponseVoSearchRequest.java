@@ -1,5 +1,7 @@
 package com.fan.dao.model.request;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +18,7 @@ public class ResponseVoSearchRequest implements Serializable {
     /**
      * 类名
      */
+    @VariableVo(comment = "类名",demoVal = "CityResponse")
     private String className;
 
     public String getClassName() {

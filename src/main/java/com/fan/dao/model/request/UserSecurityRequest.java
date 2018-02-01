@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 import java.io.Serializable;
 
@@ -17,18 +18,22 @@ public class UserSecurityRequest extends AlphaRequest {
     /**
      * 用户cookie
      */
+    @VariableVo(comment = "用户cookie",demoVal = "alksdfahsdfhaio164892364981238974")
     private String alphaCookie;
     /**
      * 密码
      */
+    @VariableVo(comment = "密码",demoVal = "xiwang")
     private String password;
     /**
      * 原密码hash
      */
+    @VariableVo(comment = "原密码hash",demoVal = "aklshdfahjklsdfhajklhdfjklahjklsdhfjklah")
     private String passwordOriginHash;
     /**
      * 新密码hash
      */
+    @VariableVo(comment = "新密码hash",demoVal = "qiowyeiryiwueyzxcbvjzbsdhaklfhlasdh")
     private String passwordNewHash;
 
     public String getAlphaCookie() {

@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,15 +38,17 @@ public class ScanClassVoUtils {
     /**
      * 把vo的信息全部扫描出来,并且弄成特定的格式
      * @param type (1-基本的vo，2-请求vo，3-响应vo)
+     * @param local 是本地还是在线
      */
-    public static List<List<String>> scanAllVo(Integer type){
-        String baseDir = "target\\classes\\com\\fan\\dao\\model\\";
+    public static List<InsertVo> scanAllVo(Integer type,Boolean local){
+        String baseDir = "E:\\data\\git\\monitor\\target\\classes\\com\\fan\\dao\\model\\";
+        String basePkg = "com.fan.dao.model.";
+
 
         String[] scanDir = null;
-        List<List<String>> sqlList = new ArrayList<List<String>>();
+        List<InsertVo> sqlList = new ArrayList<InsertVo>();
         switch (type){
             case 1:/** 基本的vo */
-
                 if(BaseType == null || BaseType.length <= 0){
                     logger.error("基本的类型文件夹不存在");
                     return null;
@@ -72,27 +74,27 @@ public class ScanClassVoUtils {
         }
         /** 扫描基础类包 */
         for(int i = 0;i < scanDir.length;i++){
-            String targetDir = baseDir + scanDir[i];
-            File folder = new File(targetDir);
-            if(folder.isDirectory() == false){
-                logger.error("目录不存在" + targetDir);
-                continue;
-            }
-            /** 扫描文件中包含的类 */
-            File[] file = folder.listFiles();
-            if(file == null || file.length <= 0){
-                continue;
-            }
-
-            for(int k = 0;k < file.length;k++){
-                InsertVo insertVo = parseFile(file[k].getPath(),type);
-                if(insertVo != null){
-                    List<String> sql = generateSQL(insertVo);
-                    if(sql == null || sql.isEmpty()){
-                        continue;
-                    }
-                    sqlList.add(sql);
+            if(local == true) {
+                String targetDir = baseDir + scanDir[i];
+                File folder = new File(targetDir);
+                if (folder.isDirectory() == false) {
+                    logger.error("目录不存在" + targetDir);
+                    continue;
                 }
+                /** 扫描文件中包含的类 */
+                File[] file = folder.listFiles();
+                if (file == null || file.length <= 0) {
+                    continue;
+                }
+
+                for (int k = 0; k < file.length; k++) {
+                    InsertVo insertVo = parseFileByFolder(file[k].getPath(), type);
+                    if (insertVo != null) {
+                        sqlList.add(insertVo);
+                    }
+                }
+            }else{
+                String targetPkg = basePkg + scanDir[i];
             }
         }
 
@@ -139,7 +141,7 @@ public class ScanClassVoUtils {
         return list;
     }
 
-    static class TypeVo{
+    public static class TypeVo{
         /**
          * 成员名称
          */
@@ -159,9 +161,41 @@ public class ScanClassVoUtils {
          * 注释
          */
         String comment;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getDemoVal() {
+            return demoVal;
+        }
+
+        public void setDemoVal(String demoVal) {
+            this.demoVal = demoVal;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
     }
 
-    static class InsertVo{
+    public static class InsertVo{
         /**
          * 类类型
          */
@@ -172,12 +206,36 @@ public class ScanClassVoUtils {
         String className;
 
         List<TypeVo> list;
+
+        public Integer getClassType() {
+            return classType;
+        }
+
+        public void setClassType(Integer classType) {
+            this.classType = classType;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public void setClassName(String className) {
+            this.className = className;
+        }
+
+        public List<TypeVo> getList() {
+            return list;
+        }
+
+        public void setList(List<TypeVo> list) {
+            this.list = list;
+        }
     }
 
     /**
      * 解析文件
      */
-    private static InsertVo parseFile(String file,Integer voType){
+    private static InsertVo parseFileByFolder(String file,Integer voType){
         if(StringUtils.isEmpty(file) == true){
             return null;
         }
@@ -190,11 +248,22 @@ public class ScanClassVoUtils {
         }
         pre2 = pre2.replaceAll("\\\\",".");
 
+
+
+        return getInfoFromClass(pre2,voType);
+    }
+
+    /**
+     * 从包中获取
+     * @param classWholeName
+     * @return
+     */
+    private static InsertVo getInfoFromClass(String classWholeName,Integer voType){
         InsertVo insertVo = new InsertVo();
         insertVo.classType = voType;
         /** 获取类中的关键信息 */
         try {
-            Class clazz = Class.forName(pre2);
+            Class clazz = Class.forName(classWholeName);
             String className = clazz.getName();
 
             insertVo.className = className.substring(className.lastIndexOf(".") + 1);
@@ -213,7 +282,7 @@ public class ScanClassVoUtils {
                 String type    = field.getType().getName();
                 String comment = "";
                 String demoval = "";
-                        /** 对类进行包装 */
+                /** 对类进行包装 */
                 VariableVo annotation = field.getAnnotation(VariableVo.class);
                 if(annotation != null){
                     comment = annotation.comment();
@@ -235,6 +304,6 @@ public class ScanClassVoUtils {
     }
 
     public static void main(String[] args){
-        scanAllVo(1);
+        scanAllVo(1,true);
     }
 }

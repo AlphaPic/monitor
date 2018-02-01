@@ -1,6 +1,8 @@
 package com.fan.dao.model.response;
 
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import java.util.List;
 public class MessageResponse implements Serializable{
     private static final long serialVersionUID = -6359533050060740592L;
 
+    @VariableVo(comment = "消息列表")
     private List<MessageInfoElem> messageList;
 
     public List<MessageInfoElem> getMessageList() {

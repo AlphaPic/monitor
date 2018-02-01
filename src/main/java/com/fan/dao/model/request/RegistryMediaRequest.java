@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 /**
  * @author:fanwenlong
@@ -15,16 +16,19 @@ public class RegistryMediaRequest extends AlphaRequest{
     /**
      * 注册类型
      */
+    @VariableVo(comment = "注册类型",demoVal = "MOBILE")
     private String registryType;
 
     /**
      * 注册邮件
      */
+    @VariableVo(comment = "注册邮件",demoVal = "alpha18603074401@gmail.com")
     private String email;
 
     /**
      * 注册手机
      */
+    @VariableVo(comment = "注册手机",demoVal = "18603074401")
     private String mobile;
 
     public String getRegistryType() {

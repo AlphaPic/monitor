@@ -1,5 +1,7 @@
 package com.fan.dao.model.response;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +20,7 @@ public class CityResponse implements Serializable{
     /**
      * 城市
      */
+    @VariableVo(comment = "城市")
     private Set<String> cities;
 
     public Set<String> getCities() {

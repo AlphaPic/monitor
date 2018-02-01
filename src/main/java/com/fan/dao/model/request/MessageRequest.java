@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 /**
  * @author:fanwenlong
@@ -16,6 +17,7 @@ public class MessageRequest extends AlphaRequest{
     /**
      * 用户id
      */
+    @VariableVo(comment = "用户id",demoVal = "12317239017301703710927301")
     private String userId;
 
     /**
@@ -24,6 +26,7 @@ public class MessageRequest extends AlphaRequest{
      * 1--已读
      * 2--所有信息
      */
+    @VariableVo(comment = "消息的读取状态",demoVal = "1")
     private Integer msgStatus;
 
     /**
@@ -33,6 +36,7 @@ public class MessageRequest extends AlphaRequest{
      * 2--一般信息
      * 3--所有信息
      */
+    @VariableVo(comment = "消息的类型",demoVal = "2")
     private Integer msgType;
 
     public String getUserId() {

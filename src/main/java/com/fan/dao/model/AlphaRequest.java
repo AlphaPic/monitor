@@ -1,5 +1,7 @@
 package com.fan.dao.model;
 
+import com.fan.framework.annotation.VariableVo;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
@@ -19,33 +21,40 @@ public class AlphaRequest implements Serializable{
      * 方法名
      */
     @NotNull(message = "方法名不能为空")
+    @VariableVo(comment = "方法名")
     private String method;
     /**
      * 版本
      */
     @NotNull(message = "版本号不能为空")
+    @VariableVo(comment = "版本")
     private String version;
     /**
      * 登录cookie
      */
+    @VariableVo(comment = "登录cookie")
     private String monitorCookie;
     /**
      * ip
      */
-    @NotNull(message = "ip不能为空")
+    @NotNull(message = "ip")
+    @VariableVo(comment = "响应信息列表")
     private String ip;
     /**
      * 登录通道
      */
     @NotNull(message = "登录通道不能为空")
+    @VariableVo(comment = "登录通道")
     private String loginChannel;
     /**
      * 请求信息
      */
+    @VariableVo(comment = "请求信息")
     private HttpServletRequest httpRequest;
     /**
      * 响应信息
      */
+    @VariableVo(comment = "响应信息")
     private HttpServletResponse httpResponse;
 
 

@@ -1,5 +1,7 @@
 package com.fan.dao.model.response;
 
+import com.fan.framework.annotation.VariableVo;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,11 +19,13 @@ public class MessageInfoElem implements Serializable{
     /**
      * 消息体
      */
+    @VariableVo(comment = "消息体")
     private String msg;
 
     /**
      * 消息的产生时间
      */
+    @VariableVo(comment = "消息的产生时间")
     private Date msgProduceDate;
 
     /**
@@ -29,16 +33,19 @@ public class MessageInfoElem implements Serializable{
      * true--已被阅读
      * false--未被阅读
      */
+    @VariableVo(comment = "消息是否已被阅读")
     private Boolean isReaded;
 
     /**
      * 消息的生产者
      */
+    @VariableVo(comment = "消息的生产者")
     private String msgProducer;
 
     /**
      * 消息的消费者
      */
+    @VariableVo(comment = "消息的消费者")
     private String msgConsumer;
 
     /**
@@ -48,6 +55,7 @@ public class MessageInfoElem implements Serializable{
      * 2--一般信息
      * 3--所有信息
      */
+    @VariableVo(comment = "消息类型")
     private String msgType;
 
     public String getMsg() {

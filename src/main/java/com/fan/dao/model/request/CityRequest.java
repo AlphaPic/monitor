@@ -1,6 +1,7 @@
 package com.fan.dao.model.request;
 
 import com.fan.dao.model.AlphaRequest;
+import com.fan.framework.annotation.VariableVo;
 
 /**
  * @author:fanwenlong
@@ -16,11 +17,13 @@ public class CityRequest extends AlphaRequest{
     /**
      * 国家
      */
+    @VariableVo(comment = "国家",demoVal = "美国")
     private String country;
 
     /**
      * 省份
      */
+    @VariableVo(comment = "省份",demoVal = "乔治亚")
     private String province;
 
     public String getCountry() {

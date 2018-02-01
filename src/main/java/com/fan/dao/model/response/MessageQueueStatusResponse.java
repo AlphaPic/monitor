@@ -1,6 +1,7 @@
 package com.fan.dao.model.response;
 
 import com.fan.framework.annotation.ResponseNotNull;
+import com.fan.framework.annotation.VariableVo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
@@ -16,8 +17,10 @@ import java.io.Serializable;
 public class MessageQueueStatusResponse implements Serializable{
     private static final long serialVersionUID = 5148646086007650351L;
 
+    @VariableVo(comment = "消息队列名称")
     private Integer queueNum;
 
+    @VariableVo(comment = "消息名称")
     private String name;
 
     public String getName() {

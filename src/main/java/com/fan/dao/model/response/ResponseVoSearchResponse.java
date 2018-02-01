@@ -2,6 +2,7 @@ package com.fan.dao.model.response;
 
 import com.fan.dao.model.monitor.ResponseInfo;
 import com.fan.dao.model.monitor.VoType;
+import com.fan.framework.annotation.VariableVo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ResponseVoSearchResponse extends VoType implements Serializable{
     /**
      * 响应信息列表
      */
+    @VariableVo(comment = "响应信息列表")
     private List<ResponseInfo> responseInfoList;
 
     public List<ResponseInfo> getResponseInfoList() {
