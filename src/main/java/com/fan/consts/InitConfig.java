@@ -69,7 +69,8 @@ public interface InitConfig {
     /** 数据库相关配置 */
     /** Mysql */
     String MYSQL_DRIVER        = "com.mysql.jdbc.Driver";                  /** mysql驱动名称 */
-    String MYSQL_URL           = "jdbc:mysql://10.115.1.223:3306/monitor"; /** mysql驱动url */
+    String MYSQL_URL           = "jdbc:mysql://10.115.1.223:3306/monitor"; /** mysql驱动url-monitor */
+    String MYSQL_URL_MOVIE     = "jdbc:mysql://10.115.1.167:3306/movie";   /** mysql驱动url-movie */
     String MYSQL_USERNAME      = "root";                                   /** mysql用户名 */
     String MYSQL_PASSWORD      = "xiwang";                                 /** mysql密码 */
 

@@ -16,6 +16,8 @@
         <jdbc.spring.version>5.0.0.RELEASE</jdbc.spring.version>
         <mybatis.version>3.4.1</mybatis.version>
         <mybatis.spring.version>1.3.0</mybatis.spring.version>
+        <jsoup.version>1.11.2</jsoup.version>
+        <ftp.version>3.6</ftp.version>
     </properties>
   <dependencies>
       <!--SPRING MVC-->
@@ -162,10 +164,27 @@
           <artifactId>spring-context-support</artifactId>
           <version>${spring.version}</version>
       </dependency>
+      <!-- JSoup的版本 -->
+      <dependency>
+          <groupId>org.jsoup</groupId>
+          <artifactId>jsoup</artifactId>
+          <version>${jsoup.version}</version>
+      </dependency>
       <dependency>
           <groupId>org.apache.tomcat</groupId>
           <artifactId>tomcat-catalina</artifactId>
           <version>8.5.4</version>
+      </dependency>
+      <dependency>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+          <version>4.5.2</version>
+      </dependency>
+      <!-- ftp工具的版本 -->
+      <dependency>
+          <groupId>commons-net</groupId>
+          <artifactId>commons-net</artifactId>
+          <version>${ftp.version}</version>
       </dependency>
       <!-- 结束 -->
   </dependencies>
