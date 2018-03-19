@@ -467,7 +467,7 @@ public class SpiderThread implements ISpiderThreadService{
      * 下载海报，并将海报存放到文件夹中去
      */
     public void downloadPost(){
-        Integer threadNum = 2;
+        Integer threadNum = 5;
         List<Long>[] idList = new List[threadNum];
         for (int i = 0;i < threadNum;i++){
             idList[i] = DBUtils.querySimpleElem(i,threadNum);//查询id的列表
@@ -601,7 +601,7 @@ public class SpiderThread implements ISpiderThreadService{
                 Long searchId = (Long) iterator.next();
                 MovieInfo info = DBUtils.queryMovieById(searchId);
                 if(info == null || downLoadMovieInfo(info) == false){
-                    logger.error("下载失败:",info.getPost());
+                    logger.error("下载失败:[" + info + "]");
                     sleepForFewSecs(random.nextInt(10));
                     continue;
                 }
@@ -629,7 +629,6 @@ public class SpiderThread implements ISpiderThreadService{
 
     /**
      * 下载ftp协议定义文件
-     * 这个有点难度，目前暂不实现
      * @param url
      */
     public void downLoadFTPMovie(String[] url) {
@@ -647,20 +646,11 @@ public class SpiderThread implements ISpiderThreadService{
     }
 
 
-    /**
-     * 下载磁力链接
-     */
-    public void downLoadMagnetFile(){
-
-    }
-
     public static void main(String[] args){
         SpiderThread spiderThread = new SpiderThread();
 //        spiderThread.getBest250Film();
 //        spiderThread.downloadPost();
-//        spiderThread.downLoadFTPMovie(new String[]{""});
-        spiderThread.downloadPost();
-        spiderThread.downLoadMagnetFile();
+        spiderThread.downLoadFTPMovie(new String[]{""});
     }
 }
 
